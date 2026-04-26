@@ -1,0 +1,12 @@
+[project]
+name = "beep-cli"
+version = "0.1.0"
+description = "The Beep CLI"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "click>=8.3.3",
+    "questionary>=2.1.1",
+    "rich-click>=1.9.7",
+    "ruff>=0.15.11",
+]
