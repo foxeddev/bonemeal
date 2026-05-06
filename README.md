@@ -1,1 +1,3 @@
-# The Beep CLI
+# 🌱 PackSeed
+
+The Minecraft pack creator.
