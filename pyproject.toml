@@ -1,7 +1,7 @@
 [project]
-name = "beep-cli"
+name = "packseed"
 version = "0.1.0"
-description = "The Beep CLI"
+description = "The Minecraft pack creator."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

@@ -1,11 +1,13 @@
+from prompt_toolkit.shortcuts import set_title
+
 from create import create
 
 import rich_click
 
 
 @rich_click.group()
-def main():
-    pass
+def main() -> None:
+    set_title("PackSeed - The Minecraft pack creator.")
 
 
 main.add_command(create)
