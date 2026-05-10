@@ -17,11 +17,6 @@ from prompt_toolkit.styles import BaseStyle, merge_styles
 from lib.cli.base import DEFAULT_KEY_BINDINGS, DEFAULT_STYLE, BORDER_VERTICAL, fmt
 
 
-__all__ = [
-    "base_component",
-]
-
-
 def base_component(
     content: Optional[AnyContainer] = None,
     title: AnyFormattedText = None,

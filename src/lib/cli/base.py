@@ -5,15 +5,6 @@ from prompt_toolkit.styles import BaseStyle, Style
 from prompt_toolkit.key_binding import KeyBindings
 
 
-__all__ = [
-    "BORDER_VERTICAL",
-    "DEFAULT_STYLE",
-    "DEFAULT_KEY_BINDINGS",
-    "merge_style_strings",
-    "fmt",
-]
-
-
 BORDER_VERTICAL = "\u2502"
 
 
