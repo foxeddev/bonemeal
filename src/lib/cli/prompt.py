@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from sys import stdout
-from typing import Optional, TextIO
+from typing import Any, Optional, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
 from prompt_toolkit.key_binding import KeyBindings, KeyBindingsBase, merge_key_bindings
@@ -104,6 +104,7 @@ def text_prompt(
 
 @dataclass
 class Option:
+    value: Any
     title: AnyFormattedText
     description: AnyFormattedText = None
 
@@ -239,7 +240,7 @@ def single_option_prompt(
 
     @component_key_bindings.add("enter")
     def _(event):
-        event.app.exit(result=hovered_option, style="class:confirmed")
+        event.app.exit(result=options[hovered_option].value, style="class:confirmed")
 
     key_bindings = merge_key_bindings(
         [
@@ -410,7 +411,15 @@ def multi_option_prompt(
 
     @component_key_bindings.add("enter")
     def _(event):
-        event.app.exit(result=option_selected, style="class:confirmed")
+        event.app.exit(
+            result=[
+                *(
+                    [options[i].value] if selected else []
+                    for i, selected in enumerate(option_selected)
+                )
+            ],
+            style="class:confirmed",
+        )
 
     key_bindings = merge_key_bindings(
         [

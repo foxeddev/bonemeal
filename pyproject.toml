@@ -9,4 +9,5 @@ dependencies = [
     "prompt-toolkit>=3.0.52",
     "rich-click>=1.9.7",
     "ruff>=0.15.11",
+    "send2trash>=2.1.0",
 ]
