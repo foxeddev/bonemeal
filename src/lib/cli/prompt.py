@@ -31,6 +31,10 @@ def text_prompt(
 
     Style class: `text_prompt`
 
+    Input field style class: `input`
+
+    Confirmed style class: `confirmed`
+
     ### Output
 
     ```
@@ -124,6 +128,8 @@ def single_option_prompt(
 
     Style class: `single_option_prompt`
 
+    Confirmed style class: `confirmed`
+
     ### Output
 
     ```
@@ -141,7 +147,13 @@ def single_option_prompt(
 
     List of options.
 
-    Style classes: `option_title`, `option_description`
+    Style class: `option`
+
+    Title style class: `option_title`
+
+    Description style class: `option_description`
+
+    Hovered style class: `hovered`
 
     #### `default_option`
 
@@ -173,7 +185,9 @@ def single_option_prompt(
                         fmt(
                             option.title,
                             [
+                                "option",
                                 "option_title",
+                                *(["hovered"] if i == hovered_option else []),
                                 *style_classes,
                             ],
                         ),
@@ -182,7 +196,12 @@ def single_option_prompt(
                                 fmt("\n  "),
                                 fmt(
                                     option.description,
-                                    ["option_description", *style_classes],
+                                    [
+                                        "option",
+                                        "option_description",
+                                        *(["hovered"] if i == hovered_option else []),
+                                        *style_classes,
+                                    ],
                                 ),
                             ]
                             if option.description
@@ -220,7 +239,7 @@ def single_option_prompt(
 
     @component_key_bindings.add("enter")
     def _(event):
-        event.app.exit(result=hovered_option)
+        event.app.exit(result=hovered_option, style="class:confirmed")
 
     key_bindings = merge_key_bindings(
         [
@@ -281,7 +300,15 @@ def multi_option_prompt(
 
     List of options.
 
-    Style classes: `option_title`, `option_description`
+    Style class: `option`
+
+    Title style class: `option_title`
+
+    Description style class: `option_description`
+
+    Hovered style class: `hovered`
+
+    Selected style class: `_selected`
 
     ### `selection_indicator`
 
@@ -323,7 +350,10 @@ def multi_option_prompt(
                         fmt(
                             option.title,
                             [
+                                "option",
                                 "option_title",
+                                *(["hovered"] if i == hovered_option else []),
+                                *(["_selected"] if option_selected[i] else []),
                                 *style_classes,
                             ],
                         ),
@@ -332,7 +362,13 @@ def multi_option_prompt(
                                 fmt("\n    "),
                                 fmt(
                                     option.description,
-                                    ["option_description", *style_classes],
+                                    [
+                                        "option",
+                                        "option_description",
+                                        *(["hovered"] if i == hovered_option else []),
+                                        *(["_selected"] if option_selected[i] else []),
+                                        *style_classes,
+                                    ],
                                 ),
                             ]
                             if option.description
@@ -374,7 +410,7 @@ def multi_option_prompt(
 
     @component_key_bindings.add("enter")
     def _(event):
-        event.app.exit(result=option_selected)
+        event.app.exit(result=option_selected, style="class:confirmed")
 
     key_bindings = merge_key_bindings(
         [
