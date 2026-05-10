@@ -71,14 +71,11 @@ def create(path: str, template: int, addons: list[int]) -> None:
 
         if not addons:
             template = multi_option_prompt(
-                title="What template do you want to use?",
+                title="What add-ons do you want to add?",
+                description="Use space to select/deselect options.",
                 options=[
-                    Option("Vanilla data pack"),
-                    Option("Vanilla resource pack"),
-                    Option(
-                        "Beet project",
-                        "Beet is a Minecraft pack development kit for both data packs and resource packs.",
-                    ),
+                    Option("Smithed conventions"),
+                    Option("StewBeet"),
                 ],
             )
 
