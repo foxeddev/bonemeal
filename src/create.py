@@ -2,7 +2,12 @@ from enum import Enum, auto
 
 from lib.cli.message import error_message, success_message
 
-from lib.cli.prompt import Option, option_prompt, text_prompt
+from lib.cli.prompt import (
+    Option,
+    multi_option_prompt,
+    single_option_prompt,
+    text_prompt,
+)
 import rich_click
 
 
@@ -12,14 +17,25 @@ class Template(Enum):
     beet = auto()
 
 
+class Addon(Enum):
+    smithed = auto()
+    stewbeet = auto()
+
+
 @rich_click.command()
 @rich_click.argument("path", required=False)
 @rich_click.option(
     "--template",
     type=rich_click.Choice(Template),
+    multiple=True,
     help="What type of project you want to create.",
 )
-def create(path: str, template: int) -> None:
+@rich_click.option(
+    "--addons",
+    type=rich_click.Choice(Addon),
+    help="What add-ons you want to add to your project.",
+)
+def create(path: str, template: int, addons: list[int]) -> None:
     """Scaffold a new project at PATH.
 
     PATH is the directory your project will be created at.
@@ -39,7 +55,7 @@ def create(path: str, template: int) -> None:
             )
 
         if not template:
-            template = option_prompt(
+            template = single_option_prompt(
                 title="What template do you want to use?",
                 options=[
                     Option("Vanilla data pack"),
@@ -52,6 +68,19 @@ def create(path: str, template: int) -> None:
             )
 
         success_message("Project created.")
+
+        if not addons:
+            template = multi_option_prompt(
+                title="What template do you want to use?",
+                options=[
+                    Option("Vanilla data pack"),
+                    Option("Vanilla resource pack"),
+                    Option(
+                        "Beet project",
+                        "Beet is a Minecraft pack development kit for both data packs and resource packs.",
+                    ),
+                ],
+            )
 
         success_message("You're all set!")
 

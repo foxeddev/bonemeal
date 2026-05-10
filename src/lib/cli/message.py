@@ -1,4 +1,4 @@
-import sys
+from sys import stdout, stderr
 from typing import Optional, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText
@@ -14,7 +14,7 @@ def info_message(
     icon: AnyFormattedText = "i",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
 ) -> None:
     """
@@ -43,7 +43,7 @@ def success_message(
     icon: AnyFormattedText = "*",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
 ) -> None:
     """
@@ -72,7 +72,7 @@ def warning_message(
     icon: AnyFormattedText = "*",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
 ) -> None:
     """
@@ -100,14 +100,14 @@ def error_message(
     description: AnyFormattedText = None,
     icon: AnyFormattedText = "*",
     line: AnyFormattedText = BORDER_VERTICAL,
-    file: TextIO = sys.stderr,
+    file: TextIO = stderr,
     connect: bool = True,
     style: Optional[BaseStyle] = None,
 ) -> None:
     """
     Default icon: `!`
 
-    Default file: `sys.stderr`
+    Default file: `stderr`
 
     Style class: `error_message`
     """

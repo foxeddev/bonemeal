@@ -1,4 +1,4 @@
-import sys
+from sys import stdout
 from typing import Optional, TextIO
 
 from prompt_toolkit import Application, print_formatted_text
@@ -25,7 +25,7 @@ def base_component(
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
     interactive: bool = False,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
     style_classes: list[str] = [],
@@ -36,7 +36,7 @@ def base_component(
     ```
     |
     * Title
-    | *Description*
+    | Description
     Content
     ```
 
@@ -60,23 +60,31 @@ def base_component(
 
     #### `icon`
 
-    Text replacing the topmost line element. Defaults to `*`.
+    Text replacing the topmost line element.
+
+    Default: `*`
 
     Style class: `icon`
 
     #### `line`
 
-    Text to be displayed as a border left to the component. Defaults to `|`.
+    Text to be displayed as a border left to the component.
+
+    Default: `|`
 
     Style class: `line`
 
     #### `connect`
 
-    Whether to add an additional line before the component. Used to add visual connection between multiple component. Defaults to `True`.
+    Whether to add an additional line before the component. Used to add visual connection between multiple component.
+
+    Default: `True`
 
     #### `file`
 
-    The file where the component should be printed. Defaults to `sys.stdout`.
+    The file where the component should be printed.
+
+    Default: `stdout`
 
     #### `style`
 

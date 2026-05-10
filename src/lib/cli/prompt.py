@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import sys
+from sys import stdout
 from typing import Optional, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
@@ -20,7 +20,7 @@ def text_prompt(
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
 ) -> str:
@@ -44,11 +44,15 @@ def text_prompt(
 
     #### `cursor`
 
-    Text to be displayed as a prefix before the input field. Defaults to `>`.
+    Text to be displayed as a prefix before the input field.
+
+    Default: `>`
 
     #### `required`
 
-    Whether an empty input should not be allowed. Defaults to False.
+    Whether an empty input should not be allowed.
+
+    Default: `False`
     """
 
     style_classes = ["text_prompt"]
@@ -100,7 +104,7 @@ class Option:
     description: AnyFormattedText = None
 
 
-def option_prompt(
+def single_option_prompt(
     options: list[Option],
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
@@ -109,16 +113,16 @@ def option_prompt(
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = sys.stdout,
+    file: TextIO = stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
 ) -> int:
     """
-    Print a prompt with a list of options.
+    Print a prompt with a list of options where only one option can be selected at a time.
 
     Default icon: `?`
 
-    Style class: `option_prompt`
+    Style class: `single_option_prompt`
 
     ### Output
 
@@ -126,8 +130,9 @@ def option_prompt(
     |
     ? Title
     | Description
-    | > Option
-    |   Option
+    | > Option title
+    |   Option description
+    |   Option title
     ```
 
     ### Arguments
@@ -136,12 +141,22 @@ def option_prompt(
 
     List of options.
 
+    Style classes: `option_title`, `option_description`
+
+    #### `default_option`
+
+    Index of the option selected when the component is created.
+
+    Default: `0`
+
     #### `cursor`
 
-    Text to be displayed as a prefix before the input field. Defaults to `>`.
+    Text to be displayed as a prefix before the hovered option.
+
+    Default: `>`
     """
 
-    style_classes = ["option_prompt"]
+    style_classes = ["single_option_prompt"]
 
     hovered_option: int = default_option
 
@@ -206,6 +221,160 @@ def option_prompt(
     @component_key_bindings.add("enter")
     def _(event):
         event.app.exit(result=hovered_option)
+
+    key_bindings = merge_key_bindings(
+        [
+            component_key_bindings,
+            *([key_bindings] if key_bindings else []),
+        ]
+    )
+
+    return base_component(
+        content=option_field,
+        title=title,
+        description=description,
+        icon=icon,
+        line=line,
+        connect=connect,
+        interactive=True,
+        file=file,
+        style=style,
+        key_bindings=key_bindings,
+        style_classes=style_classes,
+    )
+
+
+def multi_option_prompt(
+    options: list[Option],
+    title: AnyFormattedText = None,
+    description: AnyFormattedText = None,
+    cursor: AnyFormattedText = ">",
+    selection_indicator: AnyFormattedText = "*",
+    icon: AnyFormattedText = "?",
+    line: AnyFormattedText = BORDER_VERTICAL,
+    connect: bool = True,
+    file: TextIO = stdout,
+    style: Optional[BaseStyle] = None,
+    key_bindings: Optional[KeyBindingsBase] = None,
+) -> int:
+    """
+    Print a prompt with a list of options where multiple options can be selected at a time.
+
+    Default icon: `?`
+
+    Style class: `multi_option_prompt`
+
+    ### Output
+
+    ```
+    |
+    ? Title
+    | Description
+    |   * Option title
+    |     Option description
+    | > * Option title
+    ```
+
+    ### Arguments
+
+    ### `options`
+
+    List of options.
+
+    Style classes: `option_title`, `option_description`
+
+    ### `selection_indicator`
+
+    Text to be displayed as a prefix before the selected options.
+
+    Default: `*`
+
+    Style class: `selection_indicator`
+
+    ### `cursor`
+
+    Text to be displayed as a prefix before the hovered option.
+
+    Default: `>`
+
+    Style class: `cursor`
+    """
+
+    style_classes = ["multi_option_prompt"]
+
+    hovered_option: int = 0
+    option_selected: list[bool] = [False for _ in options]
+
+    cursor = fmt(cursor, ["cursor", *style_classes])
+    selection_indicator = fmt(
+        selection_indicator, ["selection_indicator", *style_classes]
+    )
+    line = fmt(line, ["line", *style_classes])
+
+    def get_option_text():
+        return merge_formatted_text(
+            [
+                merge_formatted_text(
+                    [
+                        cursor if i == hovered_option else fmt(" "),
+                        fmt(" "),
+                        selection_indicator if option_selected[i] else fmt(" "),
+                        fmt(" "),
+                        fmt(
+                            option.title,
+                            [
+                                "option_title",
+                                *style_classes,
+                            ],
+                        ),
+                        *(
+                            [
+                                fmt("\n    "),
+                                fmt(
+                                    option.description,
+                                    ["option_description", *style_classes],
+                                ),
+                            ]
+                            if option.description
+                            else []
+                        ),
+                        fmt("\n") if not i == len(options) - 1 else None,
+                    ]
+                )
+                for i, option in enumerate(options)
+            ],
+        )
+
+    def get_line_prefix(*_):
+        return merge_formatted_text([line, fmt(" ")])
+
+    option_field = Window(
+        FormattedTextControl(get_option_text),
+        always_hide_cursor=True,
+        get_line_prefix=get_line_prefix,
+    )
+
+    component_key_bindings = KeyBindings()
+
+    @component_key_bindings.add("up")
+    def _(_):
+        nonlocal hovered_option
+        if hovered_option > 0:
+            hovered_option -= 1
+
+    @component_key_bindings.add("down")
+    def _(_):
+        nonlocal hovered_option
+        if hovered_option < len(options) - 1:
+            hovered_option += 1
+
+    @component_key_bindings.add("space")
+    def _(event):
+        option_selected[hovered_option] = not option_selected[hovered_option]
+
+    @component_key_bindings.add("enter")
+    def _(event):
+        event.app.exit(result=option_selected)
 
     key_bindings = merge_key_bindings(
         [

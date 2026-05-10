@@ -17,7 +17,8 @@ DEFAULT_STYLE: BaseStyle = Style(
         ("icon warning_message", "ansiyellow"),
         ("icon error_message", "ansired"),
         ("icon text_prompt", "ansiblue"),
-        ("icon option_prompt", "ansiblue"),
+        ("icon single_option_prompt", "ansiblue"),
+        ("icon multi_option_prompt", "ansiblue"),
         ("option_description", "dim"),
     ]
 )
