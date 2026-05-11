@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from sys import stdout
+import sys
 from typing import Any, Optional, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
@@ -20,7 +20,7 @@ def text_prompt(
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = stdout,
+    file: TextIO = sys.stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
 ) -> str:
@@ -118,7 +118,7 @@ def single_option_prompt(
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = stdout,
+    file: TextIO = sys.stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
 ) -> int:
@@ -273,7 +273,7 @@ def multi_option_prompt(
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
-    file: TextIO = stdout,
+    file: TextIO = sys.stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
 ) -> int:

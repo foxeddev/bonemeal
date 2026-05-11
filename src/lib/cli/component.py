@@ -1,4 +1,4 @@
-from sys import stdout
+import sys
 from typing import Optional, TextIO
 
 from prompt_toolkit import Application, print_formatted_text
@@ -25,7 +25,7 @@ def base_component(
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
     interactive: bool = False,
-    file: TextIO = stdout,
+    file: TextIO = sys.stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
     style_classes: list[str] = [],
@@ -84,7 +84,7 @@ def base_component(
 
     The file where the component should be printed.
 
-    Default: `stdout`
+    Default: `sys.stdout`
 
     #### `style`
 
