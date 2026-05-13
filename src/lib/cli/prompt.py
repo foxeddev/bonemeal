@@ -121,7 +121,7 @@ def single_option_prompt(
     file: TextIO = sys.stdout,
     style: Optional[BaseStyle] = None,
     key_bindings: Optional[KeyBindingsBase] = None,
-) -> int:
+) -> Any:
     """
     Print a prompt with a list of options where only one option can be selected at a time.
 
