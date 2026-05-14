@@ -12,3 +12,6 @@ dependencies = [
     "ruff>=0.15.11",
     "send2trash>=2.1.0",
 ]
+
+[tool.ruff.lint]
+extend-select = ["I"]

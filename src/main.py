@@ -1,8 +1,7 @@
+import rich_click
 from prompt_toolkit.shortcuts import set_title
 
 from create import create
-
-import rich_click
 
 
 @rich_click.group()

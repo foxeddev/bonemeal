@@ -14,7 +14,7 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.output import create_output
 from prompt_toolkit.styles import BaseStyle, merge_styles
 
-from lib.cli.base import DEFAULT_KEY_BINDINGS, DEFAULT_STYLE, BORDER_VERTICAL, fmt
+from lib.cli.base import BORDER_VERTICAL, DEFAULT_KEY_BINDINGS, DEFAULT_STYLE, fmt
 
 
 def base_component(

@@ -1,9 +1,8 @@
 from typing import Optional
 
 from prompt_toolkit.formatted_text import AnyFormattedText, to_formatted_text
-from prompt_toolkit.styles import BaseStyle, Style
 from prompt_toolkit.key_binding import KeyBindings
-
+from prompt_toolkit.styles import BaseStyle, Style
 
 BORDER_VERTICAL = "\u2502"
 

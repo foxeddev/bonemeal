@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import sys
+from dataclasses import dataclass
 from typing import Any, Optional, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
