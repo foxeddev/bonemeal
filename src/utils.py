@@ -60,12 +60,22 @@ def fetch_mc_versions() -> list[MCVersion]:
 
 def get_latest_release(mc_versions: list[MCVersion]) -> str:
     releases = [
-        version for version in mc_versions if version.type == MCVersionType.RELEASE
+        mc_version
+        for mc_version in mc_versions
+        if mc_version.type == MCVersionType.RELEASE
     ]
+
     if len(releases) == 0:
+        # no release found
+
         raise Exception("There is no Minecraft release, for some reason...")
-    else:
-        return releases[0].id
+
+    if len(mc_versions) > 1:
+        # multiple releases found
+
+        warning_message("Found multiple Minecraft releases with the same ID!")
+
+    return releases[0].id
 
 
 def validate_path(path_str: str) -> Path:
@@ -120,5 +130,9 @@ def validate_mc_version(mc_version_str: str, mc_versions: list[MCVersion]) -> MC
         # no matching versions found
 
         raise Exception(f'"{mc_version_str}" is not a valid Minecraft version!')
+    if len(mc_versions) > 1:
+        # multiple matching versions found
+
+        warning_message("Found multiple versions with the same ID!")
 
     return mc_versions[0]
