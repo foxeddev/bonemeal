@@ -123,7 +123,7 @@ def validate_mc_version(mc_version_str: str, mc_versions: list[MCVersion]) -> MC
     mc_versions = [
         mc_version
         for mc_version in mc_versions
-        if mc_version.id.lower() is mc_version_str.lower()
+        if mc_version.id.lower() == mc_version_str.lower()
     ]
 
     if len(mc_versions) == 0:
