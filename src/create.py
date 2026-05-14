@@ -8,6 +8,7 @@ from lib.cli.message import error_message, info_message, success_message
 from lib.cli.prompt import Option, single_option_prompt, text_prompt
 from utils import (
     BaseType,
+    MCVersion,
     PackSeedException,
     fetch_mc_versions,
     get_git_username,
@@ -35,6 +36,75 @@ BEET_PROJECT_TYPE = BaseType(
 
 
 TYPES = [DATA_PACK_TYPE, RESOURCE_PACK_TYPE, BEET_PROJECT_TYPE]
+
+
+def path_prompt(path: Optional[str], use_default: bool = False) -> Path:
+    if not path and not use_default:
+        path = text_prompt(
+            title="Where do you want to create your project?",
+            description="Press enter to use the current directory.",
+        )
+
+    return validate_path(path or __file__)
+
+
+def type_prompt(type: Optional[BaseType], use_default: bool = False) -> BaseType:
+    if not type and not use_default:
+        type = single_option_prompt(
+            title="What type of project do you want to create?",
+            options=[
+                Option(value=type, title=type.title, description=type.description)
+                for type in TYPES
+            ],
+        )
+
+    return type or BEET_PROJECT_TYPE
+
+
+def description_prompt(description: Optional[str], use_default: bool = False) -> str:
+    if not description and not use_default:
+        description = text_prompt(
+            title="What description do you want to add to your project?",
+            description="Press enter to skip.",
+        )
+
+    return description or ""
+
+
+def author_prompt(author: Optional[str], use_default: bool = False) -> str:
+    git_username = get_git_username()
+
+    if not author and not use_default:
+        author = text_prompt(
+            title="What author do you want to set to your project?",
+            description="Press enter to use your Git username."
+            if git_username
+            else "Press enter to skip.",
+        )
+
+    return author or git_username or ""
+
+
+def mc_version_prompt(
+    mc_version: Optional[str], use_default: bool = False
+) -> MCVersion:
+    info_message("Loading Minecraft versions...")
+
+    mc_versions = fetch_mc_versions()
+
+    success_message("Done!")
+
+    latest_release = get_latest_release(mc_versions)
+
+    if not mc_version and not use_default:
+        mc_version = text_prompt(
+            title="What Minecraft version do you want to use?",
+            description="Press enter to use the latest release.",
+        )
+
+    return validate_mc_version(
+        mc_version_str=mc_version or latest_release, mc_versions=mc_versions
+    )
 
 
 @rich_click.command()
@@ -86,39 +156,8 @@ def create(
             connect=False,
         )
 
-        # PATH
-
-        if not path_str:
-            if use_default:
-                path_str = __file__
-            else:
-                path_str = (
-                    text_prompt(
-                        title="Where do you want to create your project?",
-                        description="Press enter to use the current directory.",
-                    )
-                    or __file__
-                )
-
-        path = validate_path(path_str)
-
-        id = path.name
-
-        # TYPE
-
-        if not type:
-            if use_default:
-                type = DATA_PACK_TYPE
-            else:
-                type = single_option_prompt(
-                    title="What type of project do you want to create?",
-                    options=[
-                        Option(
-                            value=type, title=type.title, description=type.description
-                        )
-                        for type in TYPES
-                    ],
-                )
+        path = path_prompt(path=path_str, use_default=use_default)
+        type = type_prompt(type=type, use_default=use_default)
 
         if type == DATA_PACK_TYPE:
             # ▄   ▗           ▌
@@ -126,44 +165,12 @@ def create(
             # ▙▘█▌▐▖█▌  ▙▌█▌▙▖▛▖
             #           ▌
 
-            # DESCRIPTION
-
-            if not description:
-                if use_default:
-                    description = ""
-                else:
-                    description = text_prompt(
-                        title="What description do you want to add to your data pack?",
-                        description="Press enter to skip.",
-                    )
-
-            # MC VERSION
-
-            info_message("Loading Minecraft versions...")
-
-            mc_versions = fetch_mc_versions()
-
-            success_message("Done!")
-
-            if not mc_version_str:
-                latest_release = get_latest_release(mc_versions)
-
-                if use_default:
-                    mc_version_str = latest_release
-
-                mc_version_str = (
-                    text_prompt(
-                        title="What Minecraft version do you want to use?",
-                        description="Press enter to use the latest release.",
-                    )
-                    or latest_release
-                )
-
-            mc_version = validate_mc_version(
-                mc_version_str=mc_version_str, mc_versions=mc_versions
+            description = description_prompt(
+                description=description, use_default=use_default
             )
-
-            # create files
+            mc_version = mc_version_prompt(
+                mc_version=mc_version_str, use_default=use_default
+            )
 
             with open(path / "pack.mcmeta", "x") as f:
                 json.dump(
@@ -186,44 +193,12 @@ def create(
             # ▌▌▙▖▄▌▙▌▙▌▌ ▙▖▙▖  ▙▌█▌▙▖▛▖
             #                   ▌
 
-            # DESCRIPTION
-
-            if not description:
-                if use_default:
-                    description = ""
-                else:
-                    description = text_prompt(
-                        title="What description do you want to add to your resource pack?",
-                        description="Press enter to skip.",
-                    )
-
-            # MC VERSION
-
-            info_message("Loading Minecraft versions...")
-
-            mc_versions = fetch_mc_versions()
-
-            success_message("Done!")
-
-            if not mc_version_str:
-                latest_release = get_latest_release(mc_versions)
-
-                if use_default:
-                    mc_version_str = latest_release
-
-                mc_version_str = (
-                    text_prompt(
-                        title="What Minecraft version do you want to use?",
-                        description="Press enter to use the latest release.",
-                    )
-                    or latest_release
-                )
-
-            mc_version = validate_mc_version(
-                mc_version_str=mc_version_str, mc_versions=mc_versions
+            description = description_prompt(
+                description=description, use_default=use_default
             )
-
-            # create files
+            mc_version = mc_version_prompt(
+                mc_version=mc_version_str, use_default=use_default
+            )
 
             with open(path / "pack.mcmeta", "x") as f:
                 json.dump(
@@ -246,60 +221,14 @@ def create(
             # ▙▘▙▖▙▖▐▖  ▙▌▌ ▙▌ ▌▙▖▙▖▐▖
             #           ▌     ▙▌
 
-            # DESCRIPTION
-
-            if not description:
-                if use_default:
-                    description = ""
-                else:
-                    description = text_prompt(
-                        title="What description do you want to add to your Beet project?",
-                        description="Press enter to skip.",
-                    )
-
-            if not author:
-                git_username = get_git_username()
-
-                if use_default:
-                    author = git_username
-                else:
-                    author = (
-                        text_prompt(
-                            title="What author do you want to set to your Beet project?",
-                            description="Press enter to use your Git username."
-                            if git_username
-                            else "Press enter to skip.",
-                        )
-                        or git_username
-                    )
-
-            # MC VERSION
-
-            info_message("Loading Minecraft versions...")
-
-            mc_versions = fetch_mc_versions()
-
-            success_message("Done!")
-
-            if not mc_version_str:
-                latest_release = get_latest_release(mc_versions)
-
-                if use_default:
-                    mc_version_str = latest_release
-
-                mc_version_str = (
-                    text_prompt(
-                        title="What Minecraft version do you want to use?",
-                        description="Press enter to use the latest release.",
-                    )
-                    or latest_release
-                )
-
-            mc_version = validate_mc_version(
-                mc_version_str=mc_version_str, mc_versions=mc_versions
+            id = path.name
+            description = description_prompt(
+                description=description, use_default=use_default
             )
-
-            # create files
+            author = author_prompt(author=author, use_default=use_default)
+            mc_version = mc_version_prompt(
+                mc_version=mc_version_str, use_default=use_default
+            )
 
             with open(path / "beet.json", "x") as f:
                 json.dump(
