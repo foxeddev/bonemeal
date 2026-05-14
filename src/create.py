@@ -1,14 +1,16 @@
 import json
+from pathlib import Path
 from typing import Optional
 
-import requests
 import rich_click
 
 from lib.cli.message import error_message, info_message, success_message
 from lib.cli.prompt import Option, single_option_prompt, text_prompt
 from utils import (
     BaseType,
+    PackSeedException,
     fetch_mc_versions,
+    get_git_username,
     get_latest_release,
     validate_mc_version,
     validate_path,
@@ -49,7 +51,11 @@ TYPES = [DATA_PACK_TYPE, RESOURCE_PACK_TYPE, BEET_PROJECT_TYPE]
 )
 @rich_click.option(
     "--description",
-    help="What type of project you want to create.",
+    help="What description you want to add to your project.",
+)
+@rich_click.option(
+    "--author",
+    help="What author you want to set for your project.",
 )
 @rich_click.option(
     "--mc-version",
@@ -64,10 +70,11 @@ TYPES = [DATA_PACK_TYPE, RESOURCE_PACK_TYPE, BEET_PROJECT_TYPE]
     help="What type of project you want to create.",
 )
 def create(
-    path_str: str = "",
+    path_str: Optional[str] = None,
     use_default: bool = False,
-    description: str = "",
-    mc_version_str: str = "",
+    description: Optional[str] = None,
+    author: Optional[str] = None,
+    mc_version_str: Optional[str] = None,
     type: Optional[BaseType] = None,
 ) -> None:
     """Scaffold a new project at PATH."""
@@ -82,8 +89,6 @@ def create(
         # PATH
 
         if not path_str:
-            # no path was specified
-
             if use_default:
                 path_str = __file__
             else:
@@ -96,6 +101,8 @@ def create(
                 )
 
         path = validate_path(path_str)
+
+        id = path.name
 
         # TYPE
 
@@ -134,23 +141,23 @@ def create(
 
             info_message("Loading Minecraft versions...")
 
-            try:
-                mc_versions = fetch_mc_versions()
-            except requests.RequestException:
-                raise Exception("Failed to load Minecraft versions!")
+            mc_versions = fetch_mc_versions()
 
             success_message("Done!")
 
             if not mc_version_str:
-                # no mc version was specified
+                latest_release = get_latest_release(mc_versions)
 
                 if use_default:
-                    mc_version_str = get_latest_release(mc_versions)
+                    mc_version_str = latest_release
 
-                mc_version_str = text_prompt(
-                    title="What Minecraft version do you want to use?",
-                    description="Press enter to use the latest release.",
-                ) or get_latest_release(mc_versions)
+                mc_version_str = (
+                    text_prompt(
+                        title="What Minecraft version do you want to use?",
+                        description="Press enter to use the latest release.",
+                    )
+                    or latest_release
+                )
 
             mc_version = validate_mc_version(
                 mc_version_str=mc_version_str, mc_versions=mc_versions
@@ -158,17 +165,18 @@ def create(
 
             # create files
 
-            json.dump(
-                {
-                    "pack": {
-                        "description": description,
-                        "min_format": [mc_version.data_pack_version],
-                        "max_format": [mc_version.data_pack_version],
-                    }
-                },
-                open(path / "pack.mcmeta", "x"),
-                indent=2,
-            )
+            with open(path / "pack.mcmeta", "x") as f:
+                json.dump(
+                    {
+                        "pack": {
+                            "description": description,
+                            "min_format": [mc_version.data_pack_version],
+                            "max_format": [mc_version.data_pack_version],
+                        }
+                    },
+                    fp=f,
+                    indent=2,
+                )
 
             success_message("Data pack created.")
 
@@ -193,23 +201,23 @@ def create(
 
             info_message("Loading Minecraft versions...")
 
-            try:
-                mc_versions = fetch_mc_versions()
-            except requests.RequestException:
-                raise Exception("Failed to load Minecraft versions!")
+            mc_versions = fetch_mc_versions()
 
             success_message("Done!")
 
             if not mc_version_str:
-                # no mc version was specified
+                latest_release = get_latest_release(mc_versions)
 
                 if use_default:
-                    mc_version_str = get_latest_release(mc_versions)
+                    mc_version_str = latest_release
 
-                mc_version_str = text_prompt(
-                    title="What Minecraft version do you want to use?",
-                    description="Press enter to use the latest release.",
-                ) or get_latest_release(mc_versions)
+                mc_version_str = (
+                    text_prompt(
+                        title="What Minecraft version do you want to use?",
+                        description="Press enter to use the latest release.",
+                    )
+                    or latest_release
+                )
 
             mc_version = validate_mc_version(
                 mc_version_str=mc_version_str, mc_versions=mc_versions
@@ -217,24 +225,108 @@ def create(
 
             # create files
 
-            json.dump(
-                {
-                    "pack": {
-                        "description": description,
-                        "min_format": [mc_version.resource_pack_version],
-                        "max_format": [mc_version.resource_pack_version],
-                    }
-                },
-                open(path / "pack.mcmeta", "x"),
-                indent=2,
-            )
+            with open(path / "pack.mcmeta", "x") as f:
+                json.dump(
+                    {
+                        "pack": {
+                            "description": description,
+                            "min_format": [mc_version.resource_pack_version],
+                            "max_format": [mc_version.resource_pack_version],
+                        }
+                    },
+                    fp=f,
+                    indent=2,
+                )
 
             success_message("Resource pack created.")
+
+        if type == BEET_PROJECT_TYPE:
+            # ▄     ▗          ▘    ▗
+            # ▙▘█▌█▌▜▘  ▛▌▛▘▛▌ ▌█▌▛▘▜▘
+            # ▙▘▙▖▙▖▐▖  ▙▌▌ ▙▌ ▌▙▖▙▖▐▖
+            #           ▌     ▙▌
+
+            # DESCRIPTION
+
+            if not description:
+                if use_default:
+                    description = ""
+                else:
+                    description = text_prompt(
+                        title="What description do you want to add to your Beet project?",
+                        description="Press enter to skip.",
+                    )
+
+            if not author:
+                git_username = get_git_username()
+
+                if use_default:
+                    author = git_username
+                else:
+                    author = (
+                        text_prompt(
+                            title="What author do you want to set to your Beet project?",
+                            description="Press enter to use your Git username."
+                            if git_username
+                            else "Press enter to skip.",
+                        )
+                        or git_username
+                    )
+
+            # MC VERSION
+
+            info_message("Loading Minecraft versions...")
+
+            mc_versions = fetch_mc_versions()
+
+            success_message("Done!")
+
+            if not mc_version_str:
+                latest_release = get_latest_release(mc_versions)
+
+                if use_default:
+                    mc_version_str = latest_release
+
+                mc_version_str = (
+                    text_prompt(
+                        title="What Minecraft version do you want to use?",
+                        description="Press enter to use the latest release.",
+                    )
+                    or latest_release
+                )
+
+            mc_version = validate_mc_version(
+                mc_version_str=mc_version_str, mc_versions=mc_versions
+            )
+
+            # create files
+
+            with open(path / "beet.json", "x") as f:
+                json.dump(
+                    {
+                        "id": id,
+                        "name": id,
+                        "version": "0.1.0",
+                        "description": description,
+                        "author": author,
+                        "minecraft": mc_version.id,  # TODO fix mc version for Beet
+                        "output": "build",
+                        "data_pack": {"load": ["src"]},
+                        "resource_pack": {"load": ["src"]},
+                    },
+                    fp=f,
+                    indent=2,
+                )
+
+            Path(path / "data" / id).mkdir(parents=True)
+            Path(path / "assets" / id).mkdir(parents=True)
+
+            success_message("Beet project created.")
 
     except KeyboardInterrupt:
         error_message("Bye!")
         exit(1)
 
-    except Exception as e:
-        error_message(e.args[0])
+    except PackSeedException as e:
+        error_message(e.title, e.description)
         exit(1)

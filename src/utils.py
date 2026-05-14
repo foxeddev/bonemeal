@@ -1,6 +1,8 @@
 import enum
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 import requests
 from prompt_toolkit.formatted_text import AnyFormattedText
@@ -8,6 +10,12 @@ from send2trash import send2trash
 
 from lib.cli.message import warning_message
 from lib.cli.prompt import Option, single_option_prompt
+
+
+@dataclass(frozen=True, slots=True)
+class PackSeedException(BaseException):
+    title: AnyFormattedText
+    description: AnyFormattedText = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,29 +41,36 @@ class MCVersion:
 
 
 def fetch_mc_versions() -> list[MCVersion]:
-    response = requests.get(
-        "https://raw.githubusercontent.com/misode/mcmeta/summary/versions/data.json",
-        timeout=5,
-    )
-
-    response.raise_for_status()
-
-    return [
-        MCVersion(
-            id=version["id"],
-            name=version["name"],
-            type=version["type"],
-            data_pack_version=(
-                version["data_pack_version"],
-                version["data_pack_version_minor"],
-            ),
-            resource_pack_version=(
-                version["resource_pack_version"],
-                version["resource_pack_version_minor"],
-            ),
+    try:
+        response = requests.get(
+            "https://raw.githubusercontent.com/misode/mcmeta/summary/versions/data.json",
+            timeout=5,
         )
-        for version in response.json()
-    ]
+
+        response.raise_for_status()
+
+        return [
+            MCVersion(
+                id=version["id"],
+                name=version["name"],
+                type=version["type"],
+                data_pack_version=(
+                    version["data_pack_version"],
+                    version["data_pack_version_minor"],
+                ),
+                resource_pack_version=(
+                    version["resource_pack_version"],
+                    version["resource_pack_version_minor"],
+                ),
+            )
+            for version in response.json()
+        ]
+
+    except requests.RequestException as e:
+        raise PackSeedException(
+            "Failed to fetch Minecraft versions!",
+            f"{e.response.status_code} {e.response.reason}" if e.response else None,
+        )
 
 
 def get_latest_release(mc_versions: list[MCVersion]) -> str:
@@ -68,14 +83,20 @@ def get_latest_release(mc_versions: list[MCVersion]) -> str:
     if len(releases) == 0:
         # no release found
 
-        raise Exception("There is no Minecraft release, for some reason...")
-
-    if len(mc_versions) > 1:
-        # multiple releases found
-
-        warning_message("Found multiple Minecraft releases with the same ID!")
+        raise PackSeedException("There is no Minecraft release, for some reason...")
 
     return releases[0].id
+
+
+def get_git_username() -> Optional[str]:
+    try:
+        return subprocess.check_output(
+            ["git", "config", "user.name"],
+            text=True,
+        ).strip()
+
+    except subprocess.CalledProcessError:
+        return None
 
 
 def validate_path(path_str: str) -> Path:
@@ -96,6 +117,9 @@ def validate_path(path_str: str) -> Path:
 
         warning_message("A file with the specified name already exists!")
     else:
+        # path doesn't exist
+
+        path.mkdir(parents=True)
         return path
 
     if not single_option_prompt(
@@ -108,13 +132,12 @@ def validate_path(path_str: str) -> Path:
     ):
         # user declines to overwrite
 
-        exit(1)
-    else:
-        # user accepts to overwrite
+        raise PackSeedException("Bye!")
 
-        send2trash(path)
-        path.mkdir(exist_ok=True, parents=True)
+    # user accepts to overwrite
 
+    send2trash(path)
+    path.mkdir(exist_ok=True, parents=True)
     return path
 
 
@@ -129,7 +152,7 @@ def validate_mc_version(mc_version_str: str, mc_versions: list[MCVersion]) -> MC
     if len(mc_versions) == 0:
         # no matching versions found
 
-        raise Exception(f'"{mc_version_str}" is not a valid Minecraft version!')
+        raise PackSeedException(f'"{mc_version_str}" is not a valid Minecraft version!')
     if len(mc_versions) > 1:
         # multiple matching versions found
 
