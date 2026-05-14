@@ -69,7 +69,7 @@ def success_message(
 def warning_message(
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
-    icon: AnyFormattedText = "*",
+    icon: AnyFormattedText = "!",
     line: AnyFormattedText = BORDER_VERTICAL,
     connect: bool = True,
     file: TextIO = sys.stdout,
