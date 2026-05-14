@@ -172,6 +172,65 @@ def create(
 
             success_message("Data pack created.")
 
+        if type == RESOURCE_PACK_TYPE:
+            # ▄▖                ▄▖    ▌
+            # ▙▘█▌▛▘▛▌▌▌▛▘▛▘█▌  ▙▌▀▌▛▘▙▘
+            # ▌▌▙▖▄▌▙▌▙▌▌ ▙▖▙▖  ▌ █▌▙▖▛▖
+            #
+
+            # DESCRIPTION
+
+            if not description:
+                if use_default:
+                    description = ""
+                else:
+                    description = text_prompt(
+                        title="What description do you want to add to your resource pack?",
+                        description="Press enter to skip.",
+                    )
+
+            # MC VERSION
+
+            info_message("Loading Minecraft versions...")
+
+            try:
+                mc_versions = fetch_mc_versions()
+            except requests.RequestException:
+                raise Exception("Failed to load Minecraft versions!")
+
+            success_message("Done!")
+
+            if not mc_version_str:
+                # no mc version was specified
+
+                if use_default:
+                    mc_version_str = get_latest_release(mc_versions)
+
+                mc_version_str = text_prompt(
+                    title="What Minecraft version do you want to use?",
+                    description="Press enter to use the latest release.",
+                ) or get_latest_release(mc_versions)
+
+            mc_version = validate_mc_version(
+                mc_version_str=mc_version_str, mc_versions=mc_versions
+            )
+
+            # create files
+
+            json.dump(
+                {
+                    "pack": {
+                        "description": description,
+                        "min_format": [mc_version.resource_pack_version],
+                        "max_format": [mc_version.resource_pack_version],
+                    }
+                },
+                open(path / "pack.mcmeta", "x"),
+                indent=2,
+            )
+
+            success_message("Resource pack created.")
+
     except KeyboardInterrupt:
         error_message("Bye!")
         exit(1)
