@@ -17,17 +17,17 @@ from utils import (
 DATA_PACK_TYPE = BaseType(
     id="data_pack",
     option_id="data-pack",
-    title="Data Pack",
+    title="Data pack",
 )
 RESOURCE_PACK_TYPE = BaseType(
     id="resource_pack",
     option_id="resource-pack",
-    title="Resource Pack",
+    title="Resource pack",
 )
 BEET_PROJECT_TYPE = BaseType(
     id="beet_project",
     option_id="beet-project",
-    title="Beet Project",
+    title="Beet project",
     description="Beet is a Minecraft pack development kit for both data packs and resource packs.",
 )
 
@@ -126,7 +126,7 @@ def create(
                     description = ""
                 else:
                     description = text_prompt(
-                        title="What description do you want to add to your project?",
+                        title="What description do you want to add to your data pack?",
                         description="Press enter to skip.",
                     )
 
@@ -170,9 +170,7 @@ def create(
                 indent=2,
             )
 
-            success_message("Project created.")
-
-            success_message("You're all set!")
+            success_message("Data pack created.")
 
     except KeyboardInterrupt:
         error_message("Bye!")
