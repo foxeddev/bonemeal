@@ -267,8 +267,8 @@ def create(
                         "version": "0.1.0",
                         "description": description,
                         "author": author,
-                        # FIXME @foxeddev: fix mc version for Beet
-                        "minecraft": mc_version.id,
+                        # TODO @foxeddev: Fix Minecraft version for Beet
+                        "minecraft": "26.1",
                         "output": "build",
                         "data_pack": {"load": ["src"]},
                         "resource_pack": {"load": ["src"]},
