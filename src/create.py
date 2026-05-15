@@ -277,8 +277,8 @@ def create(
                     indent=2,
                 )
 
-            Path(path / "data" / project_id).mkdir(parents=True)
-            Path(path / "assets" / project_id).mkdir(parents=True)
+            Path(path / "src" / "data" / project_id).mkdir(parents=True)
+            Path(path / "src" / "assets" / project_id).mkdir(parents=True)
 
             success_message("Beet project created.")
 
