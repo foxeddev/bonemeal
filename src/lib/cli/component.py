@@ -134,7 +134,7 @@ def base_component(
             else merge_formatted_text([line, fmt(" ")])
         )
 
-    return Application(
+    Application(
         Layout(
             HSplit(
                 [
