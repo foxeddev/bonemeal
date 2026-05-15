@@ -1,25 +1,42 @@
+"""Utilities for the CLI."""
+
 import enum
+import shutil
 import subprocess
 from dataclasses import dataclass
+from functools import cache
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING
 
 import requests
-from prompt_toolkit.formatted_text import AnyFormattedText
 from send2trash import send2trash
 
-from lib.cli.message import warning_message
+from lib.cli.message import info_message, success_message, warning_message
 from lib.cli.prompt import Option, single_option_prompt
+
+if TYPE_CHECKING:
+    from prompt_toolkit.formatted_text import AnyFormattedText
 
 
 @dataclass(frozen=True, slots=True)
-class PackSeedException(BaseException):
+class PackSeedError(BaseException):
+    """The base error class for the CLI."""
+
     title: AnyFormattedText
     description: AnyFormattedText = None
 
 
 @dataclass(frozen=True, slots=True)
-class BaseType:
+class UserCancelled(BaseException):
+    """Error thrown when the user refuses to continue."""
+
+    title: AnyFormattedText = "Bye!"
+
+
+@dataclass(frozen=True, slots=True)
+class BaseProjectType:
+    """The base class for project types."""
+
     id: str
     option_id: str
     title: AnyFormattedText
@@ -27,12 +44,16 @@ class BaseType:
 
 
 class MCVersionType(enum.StrEnum):
+    """Whether the Minecraft version is a release or a snapshot."""
+
     RELEASE = "release"
     SNAPSHOT = "snapshot"
 
 
 @dataclass(frozen=True, slots=True)
 class MCVersion:
+    """Class representing a Minecraft version."""
+
     id: str
     name: str
     type: MCVersionType
@@ -40,7 +61,25 @@ class MCVersion:
     resource_pack_version: tuple[int, int]
 
 
+class FetchMCVersionError(PackSeedError):
+    """Error thrown when Minecraft versions couldn't be loaded from GitHub."""
+
+    title: AnyFormattedText
+    description: AnyFormattedText = None
+
+    def __init__(self, response: requests.Response | None) -> None:
+        """Initialize an error from an optional response object."""
+        self.title = "Failed to fetch Minecraft versions!"
+        self.description = (
+            f"{response.status_code} {response.reason}" if response else None
+        )
+
+
+@cache
 def fetch_mc_versions() -> list[MCVersion]:
+    """Load a list of all Minecraft versions from GitHub."""
+    info_message("Loading Minecraft versions...")
+
     try:
         response = requests.get(
             "https://raw.githubusercontent.com/misode/mcmeta/summary/versions/data.json",
@@ -48,6 +87,8 @@ def fetch_mc_versions() -> list[MCVersion]:
         )
 
         response.raise_for_status()
+
+        success_message("Done!")
 
         return [
             MCVersion(
@@ -66,32 +107,44 @@ def fetch_mc_versions() -> list[MCVersion]:
             for version in response.json()
         ]
 
-    except requests.RequestException as e:
-        raise PackSeedException(
-            "Failed to fetch Minecraft versions!",
-            f"{e.response.status_code} {e.response.reason}" if e.response else None,
-        )
+    except requests.RequestException as err:
+        raise FetchMCVersionError(err.response) from err
 
 
-def get_latest_release(mc_versions: list[MCVersion]) -> str:
+@dataclass(frozen=True, slots=True)
+class NoMCReleaseError(PackSeedError):
+    """Error thrown when no Minecraft release was found."""
+
+    title: AnyFormattedText = "No Minecraft release was found!"
+
+
+@cache
+def get_latest_release() -> str:
+    """Get the ID of the latest Minecraft release."""
     releases = [
         mc_version
-        for mc_version in mc_versions
+        for mc_version in fetch_mc_versions()
         if mc_version.type == MCVersionType.RELEASE
     ]
 
     if len(releases) == 0:
         # no release found
 
-        raise PackSeedException("There is no Minecraft release, for some reason...")
+        raise NoMCReleaseError
 
     return releases[0].id
 
 
-def get_git_username() -> Optional[str]:
+def get_git_username() -> str | None:
+    """Try to find the user's Git username or return None."""
     try:
-        return subprocess.check_output(
-            ["git", "config", "user.name"],
+        git_path = shutil.which("git")
+
+        if not git_path:
+            return None
+
+        return subprocess.check_output(  # noqa: S603
+            [git_path, "config", "user.name"],
             text=True,
         ).strip()
 
@@ -100,6 +153,7 @@ def get_git_username() -> Optional[str]:
 
 
 def validate_path(path_str: str) -> Path:
+    """Check if a path is valid for project creation."""
     path = Path(path_str)
 
     if path.is_dir(follow_symlinks=False):
@@ -132,7 +186,7 @@ def validate_path(path_str: str) -> Path:
     ):
         # user declines to overwrite
 
-        raise PackSeedException("Bye!")
+        raise UserCancelled
 
     # user accepts to overwrite
 
@@ -141,21 +195,40 @@ def validate_path(path_str: str) -> Path:
     return path
 
 
-def validate_mc_version(mc_version_str: str, mc_versions: list[MCVersion]) -> MCVersion:
+class InvalidMCVersionError(PackSeedError):
+    """Error thrown when the provided Minecraft version is invalid."""
+
+    title: AnyFormattedText
+    description: AnyFormattedText = None
+
+    def __init__(self, mc_version_str: str) -> None:
+        """Initialize an error from the invalid Minecraft version string object."""
+        self.title = f'"{mc_version_str}" is not a valid Minecraft version!'
+
+
+def validate_mc_version(mc_version_str: str) -> MCVersion:
+    """Check if a Minecraft version is valid."""
     # find all matching versions
     mc_versions = [
         mc_version
-        for mc_version in mc_versions
+        for mc_version in fetch_mc_versions()
         if mc_version.id.lower() == mc_version_str.lower()
     ]
 
     if len(mc_versions) == 0:
         # no matching versions found
 
-        raise PackSeedException(f'"{mc_version_str}" is not a valid Minecraft version!')
+        raise InvalidMCVersionError(mc_version_str=mc_version_str)
     if len(mc_versions) > 1:
         # multiple matching versions found
 
         warning_message("Found multiple versions with the same ID!")
 
     return mc_versions[0]
+
+
+class PromptMode(enum.Enum):
+    """Whether to show prompts to the user or always use default values."""
+
+    SHOW_PROMPTS = "show_prompts"
+    USE_DEFAULT = "use_default"

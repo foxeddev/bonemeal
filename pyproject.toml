@@ -1,11 +1,6 @@
 [project]
 name = "packseed"
 version = "0.1.0"
-description = "The Minecraft pack creator."
-authors = ["FoxedDev"]
-readme = "README.md"
-license = "LICENSE"
-requires-python = ">=3.14"
 dependencies = [
     "click>=8.3.3",
     "prompt-toolkit>=3.0.52",
@@ -14,6 +9,58 @@ dependencies = [
     "ruff>=0.15.11",
     "send2trash>=2.1.0",
 ]
+requires-python = ">=3.14"
+authors = [{ name = "FoxedDev", email = "foxed.dev@gmail.com" }]
+description = "The Minecraft pack creator."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E.*"]
+keywords = [
+    "minecraft",
+    "data",
+    "resource",
+    "pack",
+    "datapack",
+    "resourcepack",
+    "mcfunction",
+    "beet",
+    "mcbeet",
+    "bolt",
+    "mecha",
+    "project",
+    "template",
+    "scaffold",
+    "boilerplate",
+
+    "tool",
+    "cli",
+    "generator",
+    "creator",
+
+    "automation",
+    "development",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Build Tools ",
+]
+
+[project.urls]
+Repository = "https://github.com/foxeddev/packseed.git"
+"Bug Tracker" = "https://github.com/foxeddev/packseed/issues"
+Changelog = "https://github.com/foxeddev/packseed/releases"
+
 
 [tool.ruff.lint]
-extend-select = ["I"]
+select = ["ALL"]
+ignore = [
+    "PLR0913", # too many arguments
+    "TD003",   # issue link for todos
+]

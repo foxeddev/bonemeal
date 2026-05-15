@@ -1,5 +1,7 @@
+"""Function for printing a `base_component`."""
+
 import sys
-from typing import Optional, TextIO
+from typing import TextIO
 
 from prompt_toolkit import Application, print_formatted_text
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
@@ -14,23 +16,31 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.output import create_output
 from prompt_toolkit.styles import BaseStyle, merge_styles
 
-from lib.cli.base import BORDER_VERTICAL, DEFAULT_KEY_BINDINGS, DEFAULT_STYLE, fmt
+from lib.cli.utils import (
+    BORDER_VERTICAL,
+    DEFAULT_KEY_BINDINGS,
+    DEFAULT_STYLE,
+    ComponentMode,
+    LineMode,
+    fmt,
+)
 
 
 def base_component(
-    content: Optional[AnyContainer] = None,
+    content: AnyContainer | None = None,
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
     icon: AnyFormattedText = "*",
     line: AnyFormattedText = BORDER_VERTICAL,
-    connect: bool = True,
-    interactive: bool = False,
+    line_mode: LineMode = LineMode.OPEN_START,
+    component_mode: ComponentMode = ComponentMode.INTERACTIVE,
     file: TextIO = sys.stdout,
-    style: Optional[BaseStyle] = None,
-    key_bindings: Optional[KeyBindingsBase] = None,
-    style_classes: list[str] = [],
-):
-    """
+    style: BaseStyle | None = None,
+    key_bindings: KeyBindingsBase | None = None,
+    style_classes: list[str] | None = None,
+) -> None:
+    """Print a formatted component.
+
     ### Output
 
     ```
@@ -54,7 +64,7 @@ def base_component(
 
     #### `description`
 
-    A description to display below the component’s title.
+    A description to display below the component's title.
 
     Style class: `description`
 
@@ -74,11 +84,19 @@ def base_component(
 
     Style class: `line`
 
-    #### `connect`
+    #### `line_mode`
 
-    Whether to add an additional line before the component. Used to add visual connection between multiple component.
+    Whether an additional line should be added before the component.
 
-    Default: `True`
+    Used to add visual connection between multiple components.
+
+    Default: `ComponentMode.INTERACTIVE`
+
+    #### `component_mode`
+
+    Whether the component should automatically exit after printing or stay interactive.
+
+    Default: `LineMode.OPEN_START`
 
     #### `file`
 
@@ -94,10 +112,11 @@ def base_component(
 
     Additional style classes to apply to all text fragments.
     """
-
+    if style_classes is None:
+        style_classes = []
     style = merge_styles([DEFAULT_STYLE, *([style] if style else [])])
     key_bindings = merge_key_bindings(
-        [DEFAULT_KEY_BINDINGS, *([key_bindings] if key_bindings else [])]
+        [DEFAULT_KEY_BINDINGS, *([key_bindings] if key_bindings else [])],
     )
 
     title = fmt(title, ["title", *style_classes])
@@ -105,10 +124,10 @@ def base_component(
     icon = fmt(icon, ["icon", *style_classes])
     line = fmt(line, ["line", *style_classes])
 
-    if connect:
+    if line_mode:
         print_formatted_text(line)
 
-    def get_line_prefix(line_number, _):
+    def get_line_prefix(line_number: int, _: int) -> AnyFormattedText:
         return (
             merge_formatted_text([icon, fmt(" ")])
             if line_number == 0
@@ -125,21 +144,23 @@ def base_component(
                                 [
                                     *([title] if title else []),
                                     *([fmt("\n"), description] if description else []),
-                                ]
-                            )
+                                ],
+                            ),
                         ),
                         always_hide_cursor=True,
                         get_line_prefix=get_line_prefix,
                         wrap_lines=True,
                     ),
                     *([content] if content else []),
-                ]
-            )
+                ],
+            ),
         ),
         style=style,
-        key_bindings=key_bindings if interactive else None,
+        key_bindings=key_bindings
+        if component_mode is ComponentMode.INTERACTIVE
+        else None,
         after_render=(lambda app: app.exit() if (not app.is_done) else None)
-        if not interactive
+        if component_mode is ComponentMode.AUTO_EXIT
         else None,
         output=create_output(file),
     ).run()

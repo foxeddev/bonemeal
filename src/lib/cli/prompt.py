@@ -1,31 +1,38 @@
+"""Functions for printing some pre-configured prompt types."""
+
 import sys
 from dataclasses import dataclass
-from typing import Any, Optional, TextIO
+from typing import TYPE_CHECKING, Any, TextIO
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
-from prompt_toolkit.key_binding import KeyBindings, KeyBindingsBase, merge_key_bindings
+from prompt_toolkit.key_binding import (
+    KeyBindings,
+    KeyBindingsBase,
+    KeyPressEvent,
+    merge_key_bindings,
+)
 from prompt_toolkit.layout import FormattedTextControl, Window
-from prompt_toolkit.styles import BaseStyle
 from prompt_toolkit.widgets import TextArea
 
-from lib.cli.base import BORDER_VERTICAL, fmt
 from lib.cli.component import base_component
+from lib.cli.utils import BORDER_VERTICAL, ComponentMode, LineMode, fmt
+
+if TYPE_CHECKING:
+    from prompt_toolkit.styles import BaseStyle
 
 
 def text_prompt(
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
-    required: bool = False,
     cursor: AnyFormattedText = ">",
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
-    connect: bool = True,
+    line_mode: LineMode = LineMode.OPEN_START,
     file: TextIO = sys.stdout,
-    style: Optional[BaseStyle] = None,
-    key_bindings: Optional[KeyBindingsBase] = None,
-) -> str:
-    """
-    Print a prompt with a single line text input field.
+    style: BaseStyle | None = None,
+    key_bindings: KeyBindingsBase | None = None,
+) -> None:
+    """Print a prompt with a single line text input field.
 
     Default icon: `?`
 
@@ -51,20 +58,13 @@ def text_prompt(
     Text to be displayed as a prefix before the input field.
 
     Default: `>`
-
-    #### `required`
-
-    Whether an empty input should not be allowed.
-
-    Default: `False`
     """
-
     style_classes = ["text_prompt"]
 
     cursor = fmt(cursor, ["cursor", *style_classes])
     line = fmt(line, ["line", *style_classes])
 
-    def get_line_prefix(*_):
+    def get_line_prefix(_: int, __: int) -> AnyFormattedText:
         return merge_formatted_text([line, fmt(" "), cursor, fmt(" ")])
 
     input_field = TextArea(
@@ -76,15 +76,14 @@ def text_prompt(
     component_key_bindings = KeyBindings()
 
     @component_key_bindings.add("enter")
-    def _(event):
-        if input_field.text or not required:
-            event.app.exit(result=input_field.text, style="class:confirmed")
+    def _(event: KeyPressEvent) -> None:
+        event.app.exit(result=input_field.text, style="class:confirmed")
 
     key_bindings = merge_key_bindings(
         [
             component_key_bindings,
             *([key_bindings] if key_bindings else []),
-        ]
+        ],
     )
 
     return base_component(
@@ -93,8 +92,8 @@ def text_prompt(
         description=description,
         icon=icon,
         line=line,
-        connect=connect,
-        interactive=True,
+        line_mode=line_mode,
+        component_mode=ComponentMode.INTERACTIVE,
         file=file,
         style=style,
         key_bindings=key_bindings,
@@ -104,6 +103,8 @@ def text_prompt(
 
 @dataclass
 class Option:
+    """Option class used for option prompts."""
+
     value: Any
     title: AnyFormattedText
     description: AnyFormattedText = None
@@ -117,13 +118,12 @@ def single_option_prompt(
     cursor: AnyFormattedText = ">",
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
-    connect: bool = True,
+    line_mode: LineMode = LineMode.OPEN_START,
     file: TextIO = sys.stdout,
-    style: Optional[BaseStyle] = None,
-    key_bindings: Optional[KeyBindingsBase] = None,
-) -> Any:
-    """
-    Print a prompt with a list of options where only one option can be selected at a time.
+    style: BaseStyle | None = None,
+    key_bindings: KeyBindingsBase | None = None,
+) -> None:
+    """Print a prompt with a list of options where only one option can be selected.
 
     Default icon: `?`
 
@@ -168,7 +168,6 @@ def single_option_prompt(
 
     Default: `>`
     """
-
     style_classes = ["single_option_prompt"]
 
     hovered_option: int = default_option
@@ -176,7 +175,7 @@ def single_option_prompt(
     cursor = fmt(cursor, ["cursor", *style_classes])
     line = fmt(line, ["line", *style_classes])
 
-    def get_option_text():
+    def get_option_text() -> AnyFormattedText:
         return merge_formatted_text(
             [
                 merge_formatted_text(
@@ -208,14 +207,14 @@ def single_option_prompt(
                             if option.description
                             else []
                         ),
-                        fmt("\n") if not i == len(options) - 1 else None,
-                    ]
+                        fmt("\n") if i != len(options) - 1 else None,
+                    ],
                 )
                 for i, option in enumerate(options)
             ],
         )
 
-    def get_line_prefix(*_):
+    def get_line_prefix(_: int, __: int) -> AnyFormattedText:
         return merge_formatted_text([line, fmt(" ")])
 
     option_field = Window(
@@ -227,26 +226,26 @@ def single_option_prompt(
     component_key_bindings = KeyBindings()
 
     @component_key_bindings.add("up")
-    def _(_):
+    def _(_: KeyPressEvent) -> None:
         nonlocal hovered_option
         if hovered_option > 0:
             hovered_option -= 1
 
     @component_key_bindings.add("down")
-    def _(_):
+    def _(_: KeyPressEvent) -> None:
         nonlocal hovered_option
         if hovered_option < len(options) - 1:
             hovered_option += 1
 
     @component_key_bindings.add("enter")
-    def _(event):
+    def _(event: KeyPressEvent) -> None:
         event.app.exit(result=options[hovered_option].value, style="class:confirmed")
 
     key_bindings = merge_key_bindings(
         [
             component_key_bindings,
             *([key_bindings] if key_bindings else []),
-        ]
+        ],
     )
 
     return base_component(
@@ -255,8 +254,8 @@ def single_option_prompt(
         description=description,
         icon=icon,
         line=line,
-        connect=connect,
-        interactive=True,
+        line_mode=line_mode,
+        component_mode=ComponentMode.INTERACTIVE,
         file=file,
         style=style,
         key_bindings=key_bindings,
@@ -272,13 +271,12 @@ def multi_option_prompt(
     selection_indicator: AnyFormattedText = "*",
     icon: AnyFormattedText = "?",
     line: AnyFormattedText = BORDER_VERTICAL,
-    connect: bool = True,
+    line_mode: LineMode = LineMode.OPEN_START,
     file: TextIO = sys.stdout,
-    style: Optional[BaseStyle] = None,
-    key_bindings: Optional[KeyBindingsBase] = None,
-) -> int:
-    """
-    Print a prompt with a list of options where multiple options can be selected at a time.
+    style: BaseStyle | None = None,
+    key_bindings: KeyBindingsBase | None = None,
+) -> None:
+    """Print a prompt with a list of options where multiple options can be selected.
 
     Default icon: `?`
 
@@ -327,7 +325,6 @@ def multi_option_prompt(
 
     Style class: `cursor`
     """
-
     style_classes = ["multi_option_prompt"]
 
     hovered_option: int = 0
@@ -335,11 +332,12 @@ def multi_option_prompt(
 
     cursor = fmt(cursor, ["cursor", *style_classes])
     selection_indicator = fmt(
-        selection_indicator, ["selection_indicator", *style_classes]
+        selection_indicator,
+        ["selection_indicator", *style_classes],
     )
     line = fmt(line, ["line", *style_classes])
 
-    def get_option_text():
+    def get_option_text() -> AnyFormattedText:
         return merge_formatted_text(
             [
                 merge_formatted_text(
@@ -375,14 +373,14 @@ def multi_option_prompt(
                             if option.description
                             else []
                         ),
-                        fmt("\n") if not i == len(options) - 1 else None,
-                    ]
+                        fmt("\n") if i != len(options) - 1 else None,
+                    ],
                 )
                 for i, option in enumerate(options)
             ],
         )
 
-    def get_line_prefix(*_):
+    def get_line_prefix(_: int, __: int) -> AnyFormattedText:
         return merge_formatted_text([line, fmt(" ")])
 
     option_field = Window(
@@ -394,29 +392,29 @@ def multi_option_prompt(
     component_key_bindings = KeyBindings()
 
     @component_key_bindings.add("up")
-    def _(_):
+    def _(_: KeyPressEvent) -> None:
         nonlocal hovered_option
         if hovered_option > 0:
             hovered_option -= 1
 
     @component_key_bindings.add("down")
-    def _(_):
+    def _(_: KeyPressEvent) -> None:
         nonlocal hovered_option
         if hovered_option < len(options) - 1:
             hovered_option += 1
 
     @component_key_bindings.add("space")
-    def _(event):
+    def _(_: KeyPressEvent) -> None:
         option_selected[hovered_option] = not option_selected[hovered_option]
 
     @component_key_bindings.add("enter")
-    def _(event):
+    def _(event: KeyPressEvent) -> None:
         event.app.exit(
             result=[
                 *(
                     [options[i].value] if selected else []
                     for i, selected in enumerate(option_selected)
-                )
+                ),
             ],
             style="class:confirmed",
         )
@@ -425,7 +423,7 @@ def multi_option_prompt(
         [
             component_key_bindings,
             *([key_bindings] if key_bindings else []),
-        ]
+        ],
     )
 
     return base_component(
@@ -434,8 +432,8 @@ def multi_option_prompt(
         description=description,
         icon=icon,
         line=line,
-        connect=connect,
-        interactive=True,
+        line_mode=line_mode,
+        component_mode=ComponentMode.INTERACTIVE,
         file=file,
         style=style,
         key_bindings=key_bindings,
