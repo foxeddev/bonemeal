@@ -213,6 +213,7 @@ def validate_mc_version(mc_version_str: str) -> MCVersion:
         mc_version
         for mc_version in fetch_mc_versions()
         if mc_version.id.lower() == mc_version_str.lower()
+        or mc_version.name.lower() == mc_version_str.lower()
     ]
 
     if len(mc_versions) == 0:
