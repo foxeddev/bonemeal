@@ -54,7 +54,7 @@ def path_prompt(
             description="Press enter to use the current directory.",
         )
 
-    return validate_path(path or __file__)
+    return validate_path(Path(path) if path else Path.cwd())
 
 
 def type_prompt(

@@ -152,10 +152,8 @@ def get_git_username() -> str | None:
         return None
 
 
-def validate_path(path_str: str) -> Path:
+def validate_path(path: Path) -> Path:
     """Check if a path is valid for project creation."""
-    path = Path(path_str)
-
     if path.is_dir(follow_symlinks=False):
         # path is a directory
 
