@@ -45,3 +45,8 @@ ignore = [
     "PLR0913", # too many arguments
     "TD003",   # issue link for todos
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+]
