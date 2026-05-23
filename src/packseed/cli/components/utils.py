@@ -19,8 +19,8 @@ class LineMode(enum.Enum):
     Used to add visual connection between multiple components.
     """
 
-    OPEN_START = "start"
-    CLOSED_START = "end"
+    OPEN_START = enum.auto()
+    CLOSED_START = enum.auto()
 
 
 class ComponentMode(enum.Enum):
@@ -29,8 +29,8 @@ class ComponentMode(enum.Enum):
     `interactive` should only be used if `content` is specified.
     """
 
-    AUTO_EXIT = "auto_exit"
-    INTERACTIVE = "interactive"
+    AUTO_EXIT = enum.auto()
+    INTERACTIVE = enum.auto()
 
 
 DEFAULT_STYLE: BaseStyle = Style(

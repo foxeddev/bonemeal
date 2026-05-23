@@ -1,0 +1,40 @@
+"""Command for creating a new data pack."""
+
+import rich_click
+
+from packseed.cli.errors import handle_errors
+from packseed.cli.messages import welcome_message
+from packseed.cli.prompts import (
+    PromptMode,
+    description_prompt,
+    mc_version_prompt,
+    path_prompt,
+)
+from packseed.core.generate.data_pack import generate_data_pack
+from packseed.core.mc_version import fetch_mc_versions
+
+
+@rich_click.command()
+@rich_click.argument("path_str", required=False)
+@rich_click.option("-y", "prompt_mode", flag_value=PromptMode.USE_DEFAULT)
+@rich_click.option("--description")
+@rich_click.option(
+    "--mc-version",
+    "mc_version_str",
+    type=rich_click.Choice(fetch_mc_versions(), case_sensitive=False),
+)
+@handle_errors
+def create_data_pack(
+    path_str: str | None = None,
+    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
+    description: str | None = None,
+    mc_version_str: str | None = None,
+) -> None:
+    """Create a new data pack at PATH."""
+    welcome_message()
+
+    path = path_prompt(path_str, prompt_mode)
+    description = description_prompt(description, prompt_mode)
+    mc_version = mc_version_prompt(mc_version_str, prompt_mode)
+
+    generate_data_pack(path=path, description=description, mc_version=mc_version)

@@ -2,7 +2,7 @@
 
 import sys
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, TextIO
+from typing import TYPE_CHECKING, TextIO, TypeVar, cast
 
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
 from prompt_toolkit.key_binding import (
@@ -14,8 +14,8 @@ from prompt_toolkit.key_binding import (
 from prompt_toolkit.layout import FormattedTextControl, Window
 from prompt_toolkit.widgets import TextArea
 
-from lib.cli.component import base_component
-from lib.cli.utils import BORDER_VERTICAL, ComponentMode, LineMode, fmt
+from packseed.cli.components.component import base_component
+from packseed.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode, fmt
 
 if TYPE_CHECKING:
     from prompt_toolkit.styles import BaseStyle
@@ -31,7 +31,7 @@ def text_prompt(
     file: TextIO = sys.stdout,
     style: BaseStyle | None = None,
     key_bindings: KeyBindingsBase | None = None,
-) -> None:
+) -> str:
     """Print a prompt with a single line text input field.
 
     Default icon: `?`
@@ -86,32 +86,38 @@ def text_prompt(
         ],
     )
 
-    return base_component(
-        content=input_field,
-        title=title,
-        description=description,
-        icon=icon,
-        line=line,
-        line_mode=line_mode,
-        component_mode=ComponentMode.INTERACTIVE,
-        file=file,
-        style=style,
-        key_bindings=key_bindings,
-        style_classes=style_classes,
+    return cast(
+        "str",
+        base_component(
+            content=input_field,
+            title=title,
+            description=description,
+            icon=icon,
+            line=line,
+            line_mode=line_mode,
+            component_mode=ComponentMode.INTERACTIVE,
+            file=file,
+            style=style,
+            key_bindings=key_bindings,
+            style_classes=style_classes,
+        ),
     )
 
 
-@dataclass
-class Option:
-    """Option class used for option prompts."""
+ChoiceType = TypeVar("ChoiceType")
 
-    value: Any
+
+@dataclass
+class Choice[ChoiceType]:
+    """Choice class used for choice prompts."""
+
+    value: ChoiceType
     title: AnyFormattedText
     description: AnyFormattedText = None
 
 
-def single_option_prompt(
-    options: list[Option],
+def single_option_prompt[ChoiceType](
+    options: list[Choice[ChoiceType]],
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
     default_option: int = 0,
@@ -122,7 +128,7 @@ def single_option_prompt(
     file: TextIO = sys.stdout,
     style: BaseStyle | None = None,
     key_bindings: KeyBindingsBase | None = None,
-) -> None:
+) -> ChoiceType:
     """Print a prompt with a list of options where only one option can be selected.
 
     Default icon: `?`
@@ -248,23 +254,26 @@ def single_option_prompt(
         ],
     )
 
-    return base_component(
-        content=option_field,
-        title=title,
-        description=description,
-        icon=icon,
-        line=line,
-        line_mode=line_mode,
-        component_mode=ComponentMode.INTERACTIVE,
-        file=file,
-        style=style,
-        key_bindings=key_bindings,
-        style_classes=style_classes,
+    return cast(
+        "ChoiceType",
+        base_component(
+            content=option_field,
+            title=title,
+            description=description,
+            icon=icon,
+            line=line,
+            line_mode=line_mode,
+            component_mode=ComponentMode.INTERACTIVE,
+            file=file,
+            style=style,
+            key_bindings=key_bindings,
+            style_classes=style_classes,
+        ),
     )
 
 
-def multi_option_prompt(
-    options: list[Option],
+def multi_option_prompt[ChoiceType](
+    options: list[Choice[ChoiceType]],
     title: AnyFormattedText = None,
     description: AnyFormattedText = None,
     cursor: AnyFormattedText = ">",
@@ -275,7 +284,7 @@ def multi_option_prompt(
     file: TextIO = sys.stdout,
     style: BaseStyle | None = None,
     key_bindings: KeyBindingsBase | None = None,
-) -> None:
+) -> ChoiceType:
     """Print a prompt with a list of options where multiple options can be selected.
 
     Default icon: `?`
@@ -426,16 +435,19 @@ def multi_option_prompt(
         ],
     )
 
-    return base_component(
-        content=option_field,
-        title=title,
-        description=description,
-        icon=icon,
-        line=line,
-        line_mode=line_mode,
-        component_mode=ComponentMode.INTERACTIVE,
-        file=file,
-        style=style,
-        key_bindings=key_bindings,
-        style_classes=style_classes,
+    return cast(
+        "ChoiceType",
+        base_component(
+            content=option_field,
+            title=title,
+            description=description,
+            icon=icon,
+            line=line,
+            line_mode=line_mode,
+            component_mode=ComponentMode.INTERACTIVE,
+            file=file,
+            style=style,
+            key_bindings=key_bindings,
+            style_classes=style_classes,
+        ),
     )

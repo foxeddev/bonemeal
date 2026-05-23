@@ -1,4 +1,4 @@
-sandbox
+sandbox/
 
 ### Python ###
 
@@ -6,4 +6,15 @@ sandbox
 __pycache__/
 
 # Environments
-.venv
+.venv/
+
+### Ruff ###
+
+# Cache
+.ruff_cache/
+
+### UV ###
+
+# Dist
+
+dist/

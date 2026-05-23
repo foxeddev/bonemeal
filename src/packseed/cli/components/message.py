@@ -3,8 +3,8 @@
 import sys
 from typing import TYPE_CHECKING, TextIO
 
-from lib.cli.component import base_component
-from lib.cli.utils import BORDER_VERTICAL, ComponentMode, LineMode
+from packseed.cli.components.component import base_component
+from packseed.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode
 
 if TYPE_CHECKING:
     from prompt_toolkit.formatted_text import AnyFormattedText
@@ -28,7 +28,7 @@ def info_message(
     """
     style_classes = ["info_message"]
 
-    return base_component(
+    base_component(
         title=title,
         description=description,
         icon=icon,
@@ -58,7 +58,7 @@ def success_message(
     """
     style_classes = ["success_message"]
 
-    return base_component(
+    base_component(
         title=title,
         description=description,
         icon=icon,
@@ -88,7 +88,7 @@ def warning_message(
     """
     style_classes = ["warning_message"]
 
-    return base_component(
+    base_component(
         title=title,
         description=description,
         icon=icon,
@@ -120,7 +120,7 @@ def error_message(
     """
     style_classes = ["error_message"]
 
-    return base_component(
+    base_component(
         title=title,
         description=description,
         icon=icon,

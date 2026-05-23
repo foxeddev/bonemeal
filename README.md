@@ -1,3 +1,3 @@
-# 🌱 PackSeed
+# 🦴 Bonemeal
 
-The Minecraft pack creator.
+The Minecraft pack manager.

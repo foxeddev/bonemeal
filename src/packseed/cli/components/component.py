@@ -1,7 +1,7 @@
 """Function for printing a `base_component`."""
 
 import sys
-from typing import TextIO
+from typing import TextIO, cast
 
 from prompt_toolkit import Application, print_formatted_text
 from prompt_toolkit.formatted_text import AnyFormattedText, merge_formatted_text
@@ -16,7 +16,7 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.output import create_output
 from prompt_toolkit.styles import BaseStyle, merge_styles
 
-from lib.cli.utils import (
+from packseed.cli.components.utils import (
     BORDER_VERTICAL,
     DEFAULT_KEY_BINDINGS,
     DEFAULT_STYLE,
@@ -38,7 +38,7 @@ def base_component(
     style: BaseStyle | None = None,
     key_bindings: KeyBindingsBase | None = None,
     style_classes: list[str] | None = None,
-) -> None:
+) -> object:
     """Print a formatted component.
 
     ### Output
@@ -124,43 +124,52 @@ def base_component(
     icon = fmt(icon, ["icon", *style_classes])
     line = fmt(line, ["line", *style_classes])
 
-    if line_mode:
+    if line_mode == LineMode.OPEN_START:
         print_formatted_text(line)
 
     def get_line_prefix(line_number: int, _: int) -> AnyFormattedText:
         return (
-            merge_formatted_text([icon, fmt(" ")])
-            if line_number == 0
-            else merge_formatted_text([line, fmt(" ")])
+            merge_formatted_text(
+                [icon if line_number == 0 and icon else line, fmt(" ")],
+            )
+            if line
+            else None
         )
 
-    Application(
-        Layout(
-            HSplit(
-                [
-                    Window(
-                        FormattedTextControl(
-                            merge_formatted_text(
-                                [
-                                    *([title] if title else []),
-                                    *([fmt("\n"), description] if description else []),
-                                ],
+    return cast(
+        "object",
+        Application(
+            Layout(
+                HSplit(
+                    [
+                        Window(
+                            FormattedTextControl(
+                                merge_formatted_text(
+                                    [
+                                        *([title] if title else []),
+                                        *(
+                                            [fmt("\n"), description]
+                                            if description
+                                            else []
+                                        ),
+                                    ],
+                                ),
                             ),
+                            always_hide_cursor=True,
+                            get_line_prefix=get_line_prefix,
+                            wrap_lines=True,
                         ),
-                        always_hide_cursor=True,
-                        get_line_prefix=get_line_prefix,
-                        wrap_lines=True,
-                    ),
-                    *([content] if content else []),
-                ],
+                        *([content] if content else []),
+                    ],
+                ),
             ),
-        ),
-        style=style,
-        key_bindings=key_bindings
-        if component_mode is ComponentMode.INTERACTIVE
-        else None,
-        after_render=(lambda app: app.exit() if (not app.is_done) else None)
-        if component_mode is ComponentMode.AUTO_EXIT
-        else None,
-        output=create_output(file),
-    ).run()
+            style=style,
+            key_bindings=key_bindings
+            if component_mode is ComponentMode.INTERACTIVE
+            else None,
+            after_render=(lambda app: app.exit() if (not app.is_done) else None)
+            if component_mode is ComponentMode.AUTO_EXIT
+            else None,
+            output=create_output(file),
+        ).run(),
+    )
