@@ -33,6 +33,7 @@ def create_data_pack(
     """Create a new data pack at PATH."""
     welcome_message()
 
+    prompt_mode = prompt_mode or PromptMode.SHOW_PROMPTS
     path = path_prompt(path_str, prompt_mode)
     description = description_prompt(description, prompt_mode)
     mc_version = mc_version_prompt(mc_version_str, prompt_mode)
