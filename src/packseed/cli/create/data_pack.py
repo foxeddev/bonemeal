@@ -16,13 +16,21 @@ from packseed.core.mc_version import fetch_mc_versions
 
 @rich_click.command("data-pack", aliases=["datapack", "dp"])
 @rich_click.argument("path_str", required=False)
-@rich_click.option("-y", "--yes", "prompt_mode", flag_value=PromptMode.USE_DEFAULT)
-@rich_click.option("-d", "--description")
+@rich_click.option(
+    "-y",
+    "--yes",
+    "prompt_mode",
+    flag_value=PromptMode.USE_DEFAULT,
+    help="Hide all interactive prompts and use default values instead.",
+)
+@rich_click.option("-d", "--description", help="The description of your data pack.")
 @rich_click.option(
     "-mc",
     "--mc-version",
     "mc_version_str",
     type=rich_click.Choice(fetch_mc_versions(), case_sensitive=False),
+    help="The Minecraft version you want to create a data pack for.",
+    show_choices=False,
 )
 @handle_errors
 def create_data_pack(
