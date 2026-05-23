@@ -16,9 +16,10 @@ from packseed.core.mc_version import fetch_mc_versions
 
 @rich_click.command()
 @rich_click.argument("path_str", required=False)
-@rich_click.option("-y", "prompt_mode", flag_value=PromptMode.USE_DEFAULT)
-@rich_click.option("--description")
+@rich_click.option("-y", "--yes", "prompt_mode", flag_value=PromptMode.USE_DEFAULT)
+@rich_click.option("-d", "--description")
 @rich_click.option(
+    "--mc",
     "--mc-version",
     "mc_version_str",
     type=rich_click.Choice(fetch_mc_versions(), case_sensitive=False),
