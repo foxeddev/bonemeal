@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "bonemeal"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
     "click>=8.3.3",
     "prompt-toolkit>=3.0.52",
@@ -47,6 +47,4 @@ ignore = [
 ]
 
 [dependency-groups]
-dev = [
-    "pre-commit>=4.6.0",
-]
+dev = ["pre-commit>=4.6.0"]
