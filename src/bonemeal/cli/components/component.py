@@ -16,7 +16,7 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.output import create_output
 from prompt_toolkit.styles import BaseStyle, merge_styles
 
-from packseed.cli.components.utils import (
+from bonemeal.cli.components.utils import (
     BORDER_VERTICAL,
     DEFAULT_KEY_BINDINGS,
     DEFAULT_STYLE,

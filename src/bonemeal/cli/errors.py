@@ -4,7 +4,7 @@ import functools
 import sys
 from typing import TYPE_CHECKING, Any
 
-from packseed.cli.components.message import error_message
+from bonemeal.cli.components.message import error_message
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -12,14 +12,14 @@ if TYPE_CHECKING:
     from prompt_toolkit.formatted_text import AnyFormattedText
 
 
-class PackSeedError(BaseException):
+class BonemealError(BaseException):
     """The base error class for the CLI."""
 
     title: AnyFormattedText
     description: AnyFormattedText = None
 
 
-class UserCancelledError(PackSeedError):
+class UserCancelledError(BonemealError):
     """Error raised when the user refuses to continue."""
 
     title: AnyFormattedText = "Bye!"
@@ -35,7 +35,7 @@ def handle_errors(func: Callable[..., Any]) -> Callable[..., Any]:
                 return func(*args, **kwargs)
             except KeyboardInterrupt as err:
                 raise UserCancelledError from err
-        except PackSeedError as err:
+        except BonemealError as err:
             error_message(err.title, err.description)
             sys.exit(1)
 

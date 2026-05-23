@@ -14,8 +14,8 @@ from prompt_toolkit.key_binding import (
 from prompt_toolkit.layout import FormattedTextControl, Window
 from prompt_toolkit.widgets import TextArea
 
-from packseed.cli.components.component import base_component
-from packseed.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode, fmt
+from bonemeal.cli.components.component import base_component
+from bonemeal.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode, fmt
 
 if TYPE_CHECKING:
     from prompt_toolkit.styles import BaseStyle

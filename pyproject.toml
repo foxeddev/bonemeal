@@ -3,7 +3,7 @@ requires = ["uv_build >= 0.11.7, <0.12.0"]
 build-backend = "uv_build"
 
 [project]
-name = "packseed"
+name = "bonemeal"
 version = "0.1.0"
 dependencies = [
     "click>=8.3.3",
@@ -32,12 +32,12 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/foxeddev/packseed.git"
-"Bug Tracker" = "https://github.com/foxeddev/packseed/issues"
-Changelog = "https://github.com/foxeddev/packseed/releases"
+Repository = "https://github.com/foxeddev/bonemeal.git"
+"Bug Tracker" = "https://github.com/foxeddev/bonemeal/issues"
+Changelog = "https://github.com/foxeddev/bonemeal/releases"
 
 [project.scripts]
-packseed = "packseed.__main__:main"
+bonemeal = "bonemeal.__main__:main"
 
 [tool.ruff.lint]
 select = ["ALL"]

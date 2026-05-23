@@ -2,10 +2,10 @@
 
 import rich_click
 
-from packseed.cli.components.message import info_message
-from packseed.cli.components.utils import LineMode
-from packseed.cli.errors import handle_errors
-from packseed.core.project_types.main import PROJECT_TYPES
+from bonemeal.cli.components.message import info_message
+from bonemeal.cli.components.utils import LineMode
+from bonemeal.cli.errors import handle_errors
+from bonemeal.core.project_types.main import PROJECT_TYPES
 
 
 @rich_click.command("list")

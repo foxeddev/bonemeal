@@ -2,16 +2,16 @@
 
 import rich_click
 
-from packseed.cli.errors import handle_errors
-from packseed.cli.messages import welcome_message
-from packseed.cli.prompts import (
+from bonemeal.cli.errors import handle_errors
+from bonemeal.cli.messages import welcome_message
+from bonemeal.cli.prompts import (
     PromptMode,
     description_prompt,
     mc_version_prompt,
     path_prompt,
 )
-from packseed.core.generate.resource_pack import generate_resource_pack
-from packseed.core.mc_version import fetch_mc_versions
+from bonemeal.core.generate.resource_pack import generate_resource_pack
+from bonemeal.core.mc_version import fetch_mc_versions
 
 
 @rich_click.command("resource-pack", aliases=["resourcepack", "rp"])

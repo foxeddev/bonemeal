@@ -1,13 +1,14 @@
 """Common messages used by multiple commands."""
 
-from packseed.cli.components.message import success_message
-from packseed.cli.components.utils import LineMode
+from bonemeal.cli.components.message import success_message
+from bonemeal.cli.components.utils import LineMode
 
 
 def welcome_message() -> None:
     """Send a welcome message."""
     success_message(
-        title="Welcome to PackSeed!",
+        title="Welcome to Bonemeal!",
         description="The Minecraft pack manager.",
+        icon="🦴",
         line_mode=LineMode.CLOSED_START,
     )

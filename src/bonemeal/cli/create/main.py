@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 import rich_click
 
-from packseed.cli.components.prompt import Choice, single_option_prompt
-from packseed.cli.errors import handle_errors
-from packseed.cli.messages import welcome_message
-from packseed.cli.utils import add_command
-from packseed.core.project_types.main import PROJECT_TYPES
+from bonemeal.cli.components.prompt import Choice, single_option_prompt
+from bonemeal.cli.errors import handle_errors
+from bonemeal.cli.messages import welcome_message
+from bonemeal.cli.utils import add_command
+from bonemeal.core.project_types.main import PROJECT_TYPES
 
 if TYPE_CHECKING:
-    from packseed.core.project_types.project_type import ProjectType
+    from bonemeal.core.project_types.project_type import ProjectType
 
 
 def project_type_prompt() -> ProjectType:

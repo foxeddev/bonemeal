@@ -5,11 +5,11 @@ from pathlib import Path
 
 from send2trash import send2trash
 
-from packseed.cli.components.message import warning_message
-from packseed.cli.components.prompt import Choice, single_option_prompt, text_prompt
-from packseed.cli.errors import UserCancelledError
-from packseed.cli.utils import get_git_username
-from packseed.core.mc_version import MCVersion, find_mc_version, get_latest_mc_release
+from bonemeal.cli.components.message import warning_message
+from bonemeal.cli.components.prompt import Choice, single_option_prompt, text_prompt
+from bonemeal.cli.errors import UserCancelledError
+from bonemeal.cli.utils import get_git_username
+from bonemeal.core.mc_version import MCVersion, find_mc_version, get_latest_mc_release
 
 
 class PromptMode(enum.Enum):

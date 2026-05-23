@@ -3,8 +3,8 @@
 import sys
 from typing import TYPE_CHECKING, TextIO
 
-from packseed.cli.components.component import base_component
-from packseed.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode
+from bonemeal.cli.components.component import base_component
+from bonemeal.cli.components.utils import BORDER_VERTICAL, ComponentMode, LineMode
 
 if TYPE_CHECKING:
     from prompt_toolkit.formatted_text import AnyFormattedText

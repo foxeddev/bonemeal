@@ -3,17 +3,17 @@
 import rich_click
 from prompt_toolkit.shortcuts import set_title
 
-from packseed.cli.create.main import create_project
-from packseed.cli.errors import handle_errors
-from packseed.cli.list.main import list_project_types
-from packseed.cli.utils import add_command
+from bonemeal.cli.create.main import create_project
+from bonemeal.cli.errors import handle_errors
+from bonemeal.cli.list.main import list_project_types
+from bonemeal.cli.utils import add_command
 
 
 @rich_click.group(context_settings={"help_option_names": ("-h", "--help")})
 @handle_errors
 def main() -> None:
     """Create and manage Minecraft packs."""
-    set_title("PackSeed - The Minecraft pack manager.")
+    set_title("🦴 Bonemeal - The Minecraft pack manager.")
 
 
 add_command(main, create_project)
