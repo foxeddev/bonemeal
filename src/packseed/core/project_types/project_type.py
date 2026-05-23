@@ -12,9 +12,6 @@ if TYPE_CHECKING:
 class ProjectType:
     """The base class for project types."""
 
-    id: str
-    name: str
-    create: rich_click.Command
     title: AnyFormattedText
-    aliases: list[str] | None = None
+    create: rich_click.RichCommand
     description: AnyFormattedText = None

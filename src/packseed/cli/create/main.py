@@ -7,6 +7,7 @@ import rich_click
 from packseed.cli.components.prompt import Choice, single_option_prompt
 from packseed.cli.errors import handle_errors
 from packseed.cli.messages import welcome_message
+from packseed.cli.utils import add_command
 from packseed.core.project_types.main import PROJECT_TYPES
 
 if TYPE_CHECKING:
@@ -43,8 +44,4 @@ def create_project(ctx: rich_click.Context) -> None:
 
 
 for project_type in PROJECT_TYPES.values():
-    create_project.add_command(
-        project_type.create,
-        name=project_type.name,
-        aliases=project_type.aliases,
-    )
+    add_command(create_project, project_type.create)

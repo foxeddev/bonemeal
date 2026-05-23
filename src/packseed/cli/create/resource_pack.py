@@ -14,7 +14,7 @@ from packseed.core.generate.resource_pack import generate_resource_pack
 from packseed.core.mc_version import fetch_mc_versions
 
 
-@rich_click.command()
+@rich_click.command("resource-pack", aliases=["resourcepack", "rp"])
 @rich_click.argument("path_str", required=False)
 @rich_click.option("-y", "--yes", "prompt_mode", flag_value=PromptMode.USE_DEFAULT)
 @rich_click.option("-d", "--description")
