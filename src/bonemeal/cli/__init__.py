@@ -1,1 +1,1 @@
-"""The CLI (command line interface) for Bonemeal."""
+"""The CLI (command line interface) for BoneMeal."""

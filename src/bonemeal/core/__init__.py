@@ -1,1 +1,1 @@
-"""The core functionality of Bonemeal."""
+"""The core functionality of Bone Meal."""

@@ -1,3 +1,3 @@
-# 🦴 Bonemeal
+# 🦴 Bone Meal
 
-The Minecraft pack manager.
+The Minecraft pack management CLI.

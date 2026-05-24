@@ -1,4 +1,4 @@
-"""Entrypoint for Bonemeal."""
+"""Entrypoint for Bone Meal."""
 
 from bonemeal.cli.main import main
 

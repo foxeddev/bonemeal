@@ -13,7 +13,7 @@ from bonemeal.cli.utils import add_command
 @handle_errors
 def main() -> None:
     """Create and manage Minecraft packs."""
-    set_title("🦴 Bonemeal - The Minecraft pack manager.")
+    set_title("🦴 Bone Meal - The Minecraft pack management CLI.")
 
 
 add_command(main, create_project)

@@ -15,7 +15,7 @@ dependencies = [
 ]
 requires-python = ">=3.14"
 authors = [{ name = "FoxedDev", email = "foxed.dev@gmail.com" }]
-description = "The Minecraft pack manager."
+description = "The Minecraft pack management CLI."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

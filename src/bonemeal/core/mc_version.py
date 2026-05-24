@@ -6,7 +6,7 @@ from functools import cache
 
 import requests
 
-from bonemeal.cli.errors import BonemealError
+from bonemeal.cli.errors import BoneMealError
 
 
 class MCVersionType(enum.Enum):
@@ -27,7 +27,7 @@ class MCVersion:
     resource_pack_version: tuple[int, int]
 
 
-class FetchMCVersionError(BonemealError):
+class FetchMCVersionError(BoneMealError):
     """Error raised when Minecraft versions couldn't be fetched from GitHub."""
 
     def __init__(self, response: requests.Response | None = None) -> None:
@@ -72,7 +72,7 @@ def fetch_mc_versions() -> list[MCVersion]:
         raise FetchMCVersionError(err.response) from err
 
 
-class NoMCReleaseError(BonemealError):
+class NoMCReleaseError(BoneMealError):
     """Error raised when no Minecraft release was found."""
 
     title = "No Minecraft release was found!"
@@ -93,7 +93,7 @@ def get_latest_mc_release() -> MCVersion:
     raise NoMCReleaseError
 
 
-class MCVersionNotFoundError(BonemealError):
+class MCVersionNotFoundError(BoneMealError):
     """Error raised when the provided Minecraft version could not be found."""
 
     def __init__(self, query: str | None = None) -> None:
