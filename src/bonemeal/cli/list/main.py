@@ -1,4 +1,4 @@
-"""Command for listing all possible project types."""
+"""Command for listing all available project types."""
 
 import rich_click
 
@@ -11,7 +11,7 @@ from bonemeal.core.project_types.main import PROJECT_TYPES
 @rich_click.command("list")
 @handle_errors
 def list_project_types() -> None:
-    """List all possible project types."""
+    """List all available project types."""
     for project_type in PROJECT_TYPES.values():
         info_message(
             project_type.title,
