@@ -8,7 +8,7 @@ from send2trash import send2trash
 from bonemeal.cli.components.message import warning_message
 from bonemeal.cli.components.prompt import Choice, single_option_prompt, text_prompt
 from bonemeal.cli.errors import UserCancelledError
-from bonemeal.cli.utils import get_git_username
+from bonemeal.core.author import get_git_username
 from bonemeal.core.mc_version import MCVersion, find_mc_version, get_latest_mc_release
 
 
@@ -90,17 +90,15 @@ def author_prompt(
     prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
 ) -> str:
     """Return the author or show a prompt if none is specified."""
-    git_username = get_git_username()
+    author = get_git_username() or author
 
     if not author and prompt_mode is PromptMode.SHOW_PROMPTS:
         author = text_prompt(
             title="What author do you want to set to your project?",
-            description="Press enter to use your Git username."
-            if git_username
-            else "Press enter to skip.",
+            description="Press enter to skip.",
         )
 
-    return author or git_username or ""
+    return author or ""
 
 
 def mc_version_prompt(
