@@ -37,11 +37,8 @@ def create_project(ctx: rich_click.Context) -> None:
     if not ctx.invoked_subcommand:
         welcome_message()
 
-        project_type = project_type_prompt()
-
-        if project_type.create.callback:
-            project_type.create.callback()
+        project_type_prompt().create()
 
 
 for project_type in PROJECT_TYPES.values():
-    add_command(create_project, project_type.create)
+    add_command(create_project, project_type.create_cmd)

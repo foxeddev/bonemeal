@@ -14,6 +14,21 @@ from bonemeal.core.generate.resource_pack import generate_resource_pack
 from bonemeal.core.mc_version import fetch_mc_versions
 
 
+def create_resource_pack(
+    path_str: str | None = None,
+    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
+    description: str | None = None,
+    mc_version_str: str | None = None,
+) -> None:
+    """Create a new resource pack at PATH."""
+    prompt_mode = prompt_mode or PromptMode.SHOW_PROMPTS
+    path = path_prompt(path_str, prompt_mode)
+    description = description_prompt(description, prompt_mode)
+    mc_version = mc_version_prompt(mc_version_str, prompt_mode)
+
+    generate_resource_pack(path=path, description=description, mc_version=mc_version)
+
+
 @rich_click.command("resource-pack", aliases=["resourcepack", "rp"])
 @rich_click.argument("path_str", required=False)
 @rich_click.option(
@@ -32,22 +47,19 @@ from bonemeal.core.mc_version import fetch_mc_versions
     help="The Minecraft version you want to create a resource pack for.",
     show_choices=False,
 )
-@rich_click.pass_context
 @handle_errors
-def create_resource_pack(
-    ctx: rich_click.Context | None = None,
+def create_resource_pack_cmd(
     path_str: str | None = None,
     prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
     """Create a new resource pack at PATH."""
-    if ctx:
-        welcome_message()
+    welcome_message()
 
-    prompt_mode = prompt_mode or PromptMode.SHOW_PROMPTS
-    path = path_prompt(path_str, prompt_mode)
-    description = description_prompt(description, prompt_mode)
-    mc_version = mc_version_prompt(mc_version_str, prompt_mode)
-
-    generate_resource_pack(path=path, description=description, mc_version=mc_version)
+    create_resource_pack(
+        path_str=path_str,
+        prompt_mode=prompt_mode,
+        description=description,
+        mc_version_str=mc_version_str,
+    )

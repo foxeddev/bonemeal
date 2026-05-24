@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     import rich_click
     from prompt_toolkit.formatted_text import AnyFormattedText
 
@@ -13,5 +15,6 @@ class ProjectType:
     """The base class for project types."""
 
     title: AnyFormattedText
-    create: rich_click.RichCommand
+    create: Callable[..., None]
+    create_cmd: rich_click.RichCommand
     description: AnyFormattedText = None
