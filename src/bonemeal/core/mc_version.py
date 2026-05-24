@@ -3,6 +3,7 @@
 import enum
 from dataclasses import dataclass
 from functools import cache
+from typing import Any
 
 import requests
 
@@ -29,7 +30,37 @@ class MCVersion:
     resource_pack_version: tuple[int, int]
 
 
-class FetchMCVersionError(BoneMealError):
+class ParseMCVersionsError(BoneMealError):
+    """Error raised when Minecraft versions couldn't be parsed."""
+
+    title = "Failed to parse Minecraft versions!"
+
+
+def parse_mc_versions(mc_versions: list[Any]) -> dict[str, MCVersion]:
+    """Convert a Minecraft version list to a list of MCVersion instances."""
+    try:
+        return {
+            version["id"]: MCVersion(
+                order_index=i,
+                id=version["id"],
+                name=version["name"],
+                type=MCVersionType(version["type"]),
+                data_pack_version=(
+                    version["data_pack_version"],
+                    version["data_pack_version_minor"],
+                ),
+                resource_pack_version=(
+                    version["resource_pack_version"],
+                    version["resource_pack_version_minor"],
+                ),
+            )
+            for i, version in enumerate(mc_versions)
+        }
+    except (KeyError, ValueError, TypeError) as err:
+        raise ParseMCVersionsError from err
+
+
+class FetchMCVersionsError(BoneMealError):
     """Error raised when Minecraft versions couldn't be fetched from GitHub."""
 
     def __init__(self, response: requests.Response | None = None) -> None:
@@ -48,29 +79,11 @@ def fetch_mc_versions() -> dict[str, MCVersion]:
             "https://raw.githubusercontent.com/misode/mcmeta/summary/versions/data.json",
             timeout=5,
         )
-
         response.raise_for_status()
-
-        return {
-            version["id"]: MCVersion(
-                order_index=i,
-                id=version["id"],
-                name=version["name"],
-                type=version["type"],
-                data_pack_version=(
-                    version["data_pack_version"],
-                    version["data_pack_version_minor"],
-                ),
-                resource_pack_version=(
-                    version["resource_pack_version"],
-                    version["resource_pack_version_minor"],
-                ),
-            )
-            for i, version in enumerate(response.json())
-        }
+        return parse_mc_versions(response.json())
 
     except requests.RequestException as err:
-        raise FetchMCVersionError(err.response) from err
+        raise FetchMCVersionsError(err.response) from err
 
 
 class NoMCReleaseError(BoneMealError):
@@ -82,16 +95,15 @@ class NoMCReleaseError(BoneMealError):
 @cache
 def get_latest_mc_release() -> MCVersion:
     """Fetch the latest Minecraft release from GitHub."""
-    releases = [
-        mc_version
-        for mc_version in fetch_mc_versions().values()
-        if mc_version.type == MCVersionType.RELEASE
-    ]
+    try:
+        return next(
+            mc_version
+            for mc_version in fetch_mc_versions().values()
+            if mc_version.type == MCVersionType.RELEASE
+        )
 
-    if len(releases) > 0:
-        return releases[0]
-
-    raise NoMCReleaseError
+    except StopIteration as err:
+        raise NoMCReleaseError from err
 
 
 class MCVersionNotFoundError(BoneMealError):
