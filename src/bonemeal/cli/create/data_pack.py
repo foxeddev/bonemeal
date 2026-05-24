@@ -32,15 +32,18 @@ from bonemeal.core.mc_version import fetch_mc_versions
     help="The Minecraft version you want to create a data pack for.",
     show_choices=False,
 )
+@rich_click.pass_context
 @handle_errors
 def create_data_pack(
+    ctx: rich_click.Context | None = None,
     path_str: str | None = None,
     prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
     """Create a new data pack at PATH."""
-    welcome_message()
+    if ctx:
+        welcome_message()
 
     prompt_mode = prompt_mode or PromptMode.SHOW_PROMPTS
     path = path_prompt(path_str, prompt_mode)
