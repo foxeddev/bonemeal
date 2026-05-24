@@ -2,6 +2,7 @@
 
 import enum
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from send2trash import send2trash
 
@@ -10,6 +11,9 @@ from bonemeal.cli.components.prompt import Choice, single_option_prompt, text_pr
 from bonemeal.cli.errors import UserCancelledError
 from bonemeal.core.author import get_git_username
 from bonemeal.core.mc_version import MCVersion, find_mc_version, get_latest_mc_release
+
+if TYPE_CHECKING:
+    from bonemeal.core.mc_version import MCVersion
 
 
 class PromptMode(enum.Enum):
@@ -113,7 +117,5 @@ def mc_version_prompt(
         )
 
     return (
-        find_mc_version(query=mc_version_str)
-        if mc_version_str
-        else get_latest_mc_release()
+        find_mc_version(mc_version_str) if mc_version_str else get_latest_mc_release()
     )

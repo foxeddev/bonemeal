@@ -28,7 +28,7 @@ from bonemeal.core.mc_version import fetch_mc_versions
     "-mc",
     "--mc-version",
     "mc_version_str",
-    type=rich_click.Choice(fetch_mc_versions(), case_sensitive=False),
+    type=rich_click.Choice(fetch_mc_versions().values(), case_sensitive=False),
     help="The Minecraft version you want to create a data pack for.",
     show_choices=False,
 )
