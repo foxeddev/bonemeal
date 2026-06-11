@@ -12,6 +12,7 @@ dependencies = [
     "rich-click>=1.9.7",
     "ruff>=0.15.11",
     "send2trash>=2.1.0",
+    "tomlkit>=0.15.0",
 ]
 requires-python = ">=3.14"
 authors = [{ name = "FoxedDev", email = "foxed.dev@gmail.com" }]
