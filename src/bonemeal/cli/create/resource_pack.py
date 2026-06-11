@@ -29,7 +29,7 @@ def create_resource_pack(
     generate_resource_pack(path=path, description=description, mc_version=mc_version)
 
 
-@rich_click.command("resource-pack", aliases=["resourcepack", "rp"])
+@rich_click.command("resource-pack", aliases=["resource-pack", "resourcepack", "rp"])
 @rich_click.argument("path_str", required=False)
 @rich_click.option(
     "-y",

@@ -29,7 +29,7 @@ def create_data_pack(
     generate_data_pack(path=path, description=description, mc_version=mc_version)
 
 
-@rich_click.command("data-pack", aliases=["datapack", "dp"])
+@rich_click.command("data-pack", aliases=["data-pack", "datapack", "dp"])
 @rich_click.argument("path_str", required=False)
 @rich_click.option(
     "-y",
