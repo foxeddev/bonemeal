@@ -71,7 +71,7 @@ def path_prompt(
     # user accepts to overwrite
 
     send2trash(path)
-    path.mkdir(exist_ok=True, parents=True)
+    path.mkdir(parents=True)
     return path
 
 
