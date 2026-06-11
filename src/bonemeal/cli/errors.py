@@ -22,7 +22,7 @@ class BoneMealError(BaseException):
 class UserCancelledError(BoneMealError):
     """Error raised when the user refuses to continue."""
 
-    title: AnyFormattedText = "Bye!"
+    title = "Bye!"
 
 
 def handle_errors(func: Callable[..., Any]) -> Callable[..., Any]:
