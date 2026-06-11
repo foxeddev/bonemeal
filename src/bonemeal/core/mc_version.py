@@ -63,9 +63,10 @@ def parse_mc_versions(mc_versions: list[Any]) -> dict[str, MCVersion]:
 class FetchMCVersionsError(BoneMealError):
     """Error raised when Minecraft versions couldn't be fetched from GitHub."""
 
+    title = "Failed to fetch Minecraft versions!"
+
     def __init__(self, response: requests.Response | None = None) -> None:
         """Initialize an error from an optional response object."""
-        self.title = "Failed to fetch Minecraft versions!"
         self.description = (
             f"{response.status_code} {response.reason}" if response else None
         )
