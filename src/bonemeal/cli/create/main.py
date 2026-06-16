@@ -33,7 +33,7 @@ def project_type_prompt() -> ProjectType:
 @rich_click.pass_context
 @handle_errors
 def create_project(ctx: rich_click.Context) -> None:
-    """Scaffold a new project at PATH."""
+    """Create a new project."""
     if not ctx.invoked_subcommand:
         welcome_message()
 

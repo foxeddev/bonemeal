@@ -13,8 +13,8 @@ from bonemeal.cli.utils import add_command, help_config
 @rich_click.rich_config(help_config=help_config)
 @handle_errors
 def main() -> None:
-    """Create and manage Minecraft packs."""
-    set_title("🦴 Bone Meal - The Minecraft pack management CLI.")
+    """The Minecraft pack management CLI."""  # noqa: D401
+    set_title("🦴 Bone Meal, the Minecraft pack management CLI.")
 
 
 add_command(main, create_project)
