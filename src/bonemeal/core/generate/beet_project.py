@@ -11,10 +11,10 @@ from bonemeal.core.utils import run_silent
 
 
 def generate_pyproject_toml(
-    project_id: str | None,
-    project_name: str | None,
-    author: str | None,
-    description: str | None,
+    project_id: str,
+    project_name: str,
+    author: str,
+    description: str,
 ) -> TOMLDocument:
     """Generate a `pyproject.toml`-file for a Beet project."""
     doc = document()
@@ -67,8 +67,8 @@ class UVError(BoneMealError):
 
 def generate_beet_project(
     path: Path,
-    author: str | None,
-    description: str | None,
+    author: str,
+    description: str,
 ) -> None:
     """Generate a new data pack."""
     path = path.expanduser().resolve()

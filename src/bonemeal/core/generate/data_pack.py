@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 def generate_data_pack(
     path: Path,
-    description: str | None,
+    description: str,
     mc_version: MCVersion,
 ) -> None:
     """Generate a new data pack."""
