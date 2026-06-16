@@ -3,11 +3,15 @@
 import os
 import subprocess
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tomlkit import TOMLDocument, array, document, dump, inline_table, table
 
 from bonemeal.cli.errors import BoneMealError
 from bonemeal.core.utils import run_silent
+
+if TYPE_CHECKING:
+    from bonemeal.core.mc_version import MCVersion
 
 
 def generate_pyproject_toml(
@@ -15,6 +19,7 @@ def generate_pyproject_toml(
     project_name: str,
     author: str,
     description: str,
+    mc_version: MCVersion,
 ) -> TOMLDocument:
     """Generate a `pyproject.toml`-file for a Beet project."""
     doc = document()
@@ -32,7 +37,7 @@ def generate_pyproject_toml(
     project["requires-python"] = ">=3.14"
     project["authors"] = array()
     project["authors"].append(inline_table().add("name", author))
-    project["description"] = ""
+    project["description"] = description
     project["readme"] = "README.md"
     project["license"] = "MIT"
     project["license-files"] = ["LICENSE"]
@@ -47,7 +52,7 @@ def generate_pyproject_toml(
     beet["version"] = "0.1.0"
     beet["author"] = author
     beet["description"] = description
-    beet["minecraft"] = "26.1"
+    beet["minecraft"] = mc_version.id
     beet["output"] = "build"
     beet["data_pack"] = inline_table().add("load", "src")
     beet["resource_pack"] = inline_table().add("load", "src")
@@ -69,6 +74,7 @@ def generate_beet_project(
     path: Path,
     author: str,
     description: str,
+    mc_version: MCVersion,
 ) -> None:
     """Generate a new data pack."""
     path = path.expanduser().resolve()
@@ -84,6 +90,7 @@ def generate_beet_project(
                 project_name=project_name,
                 author=author,
                 description=description,
+                mc_version=mc_version,
             ),
             fp=f,
         )
