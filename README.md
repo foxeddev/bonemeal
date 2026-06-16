@@ -2,6 +2,8 @@
 
 The Minecraft pack management CLI.
 
+[[PyPI package]](https://pypi.org/project/bonemeal/)
+
 ## Installation
 
 1. Download [Python](https://www.python.org/downloads/)
