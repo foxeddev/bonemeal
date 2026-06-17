@@ -5,7 +5,7 @@ import sys
 from typing import TYPE_CHECKING, Any
 
 from bonemeal.cli.components.message import error_message
-from bonemeal.core.error import BoneMealError
+from bonemeal.core.errors.main import BoneMealError
 
 if TYPE_CHECKING:
     from collections.abc import Callable
