@@ -58,7 +58,7 @@ def _(event: KeyPressEvent) -> None:
 
 
 def merge_style_strings(styles: list[str]) -> str:
-    """Merge (Concatenate) several style strings together."""
+    """Merge multiple style strings."""
     return " ".join(style for style in styles)
 
 

@@ -14,8 +14,8 @@ def list_project_types() -> None:
     """List all available project types."""
     for project_type in PROJECT_TYPES.values():
         info_message(
-            project_type.title,
-            project_type.description,
+            title=project_type.title,
+            description=project_type.description,
             line=None,
             line_mode=LineMode.CLOSED_START,
         )
