@@ -11,8 +11,8 @@ from bonemeal.cli.common.prompts import (
     path_prompt,
 )
 from bonemeal.cli.utils.errors import handle_errors
+from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.beet_project import generate_beet_project
-from bonemeal.core.mc_version import fetch_mc_versions
 
 
 def create_beet_project(

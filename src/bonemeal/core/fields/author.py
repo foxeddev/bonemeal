@@ -1,8 +1,8 @@
-"""Utitities related to the project author field."""
+"""Utilities related to the author field."""
 
 import subprocess
 
-from bonemeal.core.commands import check
+from bonemeal.core.utils.commands import check
 
 
 def get_git_username() -> str | None:

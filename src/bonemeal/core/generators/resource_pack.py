@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from bonemeal.core.mc_version import MCVersion
+    from bonemeal.core.fields.mc_version import MCVersion
 
 
 def generate_resource_pack(

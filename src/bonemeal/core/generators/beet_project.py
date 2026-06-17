@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING
 
 from tomlkit import TOMLDocument, array, document, dump, inline_table, table
 
-from bonemeal.core.commands import run
-from bonemeal.core.error import BoneMealError
+from bonemeal.core.errors.main import BoneMealError
+from bonemeal.core.utils.commands import run
 
 if TYPE_CHECKING:
-    from bonemeal.core.mc_version import MCVersion
+    from bonemeal.core.fields.mc_version import MCVersion
 
 
 def generate_pyproject_toml(

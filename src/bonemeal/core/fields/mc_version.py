@@ -1,4 +1,4 @@
-"""Utitities for handling Minecraft versions."""
+"""Utilities related to the Minecraft version field."""
 
 import enum
 from dataclasses import dataclass
@@ -7,7 +7,7 @@ from typing import Any
 
 import requests
 
-from bonemeal.core.error import BoneMealError
+from bonemeal.core.errors.main import BoneMealError
 
 
 class MCVersionType(enum.Enum):
