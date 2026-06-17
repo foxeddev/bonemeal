@@ -1,4 +1,4 @@
-"""Helper function related to the project author field."""
+"""Utitities related to the project author field."""
 
 import subprocess
 
