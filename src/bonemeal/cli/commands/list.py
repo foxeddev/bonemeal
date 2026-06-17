@@ -4,7 +4,7 @@ import rich_click
 
 from bonemeal.cli.components.message import info_message
 from bonemeal.cli.components.utils import LineMode
-from bonemeal.cli.errors import handle_errors
+from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.project_types.main import PROJECT_TYPES
 
 

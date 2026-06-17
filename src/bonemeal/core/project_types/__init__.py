@@ -1,1 +1,1 @@
-"""Class and registry for project types."""
+"""Base class and registry for project types."""

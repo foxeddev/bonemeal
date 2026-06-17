@@ -1,4 +1,4 @@
-"""Error decorator for CLI commands."""
+"""Utilities for handling errors."""
 
 import functools
 import sys

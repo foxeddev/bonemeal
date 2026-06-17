@@ -1,1 +1,1 @@
-"""Components for the interactive CLI."""
+"""Components."""

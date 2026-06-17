@@ -1,11 +1,14 @@
-"""Register all project types."""
+"""The registry for all project types."""
 
-from bonemeal.cli.create.beet_project import (
+from bonemeal.cli.commands.create.beet_project import (
     create_beet_project,
     create_beet_project_cmd,
 )
-from bonemeal.cli.create.data_pack import create_data_pack, create_data_pack_cmd
-from bonemeal.cli.create.resource_pack import (
+from bonemeal.cli.commands.create.data_pack import (
+    create_data_pack,
+    create_data_pack_cmd,
+)
+from bonemeal.cli.commands.create.resource_pack import (
     create_resource_pack,
     create_resource_pack_cmd,
 )

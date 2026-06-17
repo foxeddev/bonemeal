@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 import rich_click
 
-from bonemeal.cli.commands import add_command
+from bonemeal.cli.common.messages import welcome_message
 from bonemeal.cli.components.prompt import Choice, single_option_prompt
-from bonemeal.cli.errors import handle_errors
-from bonemeal.cli.messages import welcome_message
+from bonemeal.cli.utils.commands import add_command
+from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.project_types.main import PROJECT_TYPES
 
 if TYPE_CHECKING:

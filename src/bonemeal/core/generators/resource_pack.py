@@ -1,4 +1,4 @@
-"""Function to generate a new resource pack."""
+"""Function for generating a new resource pack."""
 
 import json
 from pathlib import Path

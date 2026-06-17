@@ -1,4 +1,4 @@
-"""The base class and registry for project types."""
+"""The base class for project types."""
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING

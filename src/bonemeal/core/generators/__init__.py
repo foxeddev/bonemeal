@@ -1,1 +1,1 @@
-"""Functions for generating projects of different types."""
+"""Functions for generating new projects of different types."""

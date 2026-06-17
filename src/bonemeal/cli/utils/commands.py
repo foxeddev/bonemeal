@@ -1,4 +1,4 @@
-"""Utilities for handling CLI commands."""
+"""Utilities for handling commands."""
 
 from typing import TYPE_CHECKING
 

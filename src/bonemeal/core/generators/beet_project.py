@@ -1,4 +1,4 @@
-"""Function to generate a new data pack."""
+"""Function for generating a new data pack."""
 
 import os
 import subprocess

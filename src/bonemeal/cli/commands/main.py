@@ -3,10 +3,10 @@
 import rich_click
 from prompt_toolkit.shortcuts import set_title
 
-from bonemeal.cli.commands import add_command
-from bonemeal.cli.create.main import create_project
-from bonemeal.cli.errors import handle_errors
-from bonemeal.cli.list.main import list_project_types
+from bonemeal.cli.commands.create.main import create_project
+from bonemeal.cli.commands.list import list_project_types
+from bonemeal.cli.utils.commands import add_command
+from bonemeal.cli.utils.errors import handle_errors
 
 help_config = rich_click.RichHelpConfiguration(
     style_option="blue",
