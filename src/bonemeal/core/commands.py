@@ -1,31 +1,35 @@
-"""Utilities."""
+"""Utilities for running commands."""
 
 import subprocess
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from pathlib import Path
+TIMEOUT = 20
 
 
-def run_silent(cmd: list[str | Path]) -> subprocess.CompletedProcess[bytes]:
-    """Run a command using subprocess without showing the output to the user.
+def run(
+    cmd: list[str],
+    timeout: int = TIMEOUT,
+) -> None:
+    """Run a command.
 
     Raises `subprocess.CalledProcessError` when the command fails to execute.
 
     Raises `subprocess.TimeoutExpired` when the command doesn't respond within 20
     seconds.
     """
-    return subprocess.run(
+    subprocess.run(
         args=cmd,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True,
-        timeout=20,
+        timeout=timeout,
     )
 
 
-def check_silent(cmd: list[str | Path]) -> str:
-    """Run a command without showing the output to the user and returns the result.
+def check(
+    cmd: list[str],
+    timeout: int = TIMEOUT,
+) -> str:
+    """Run a command and return the result.
 
     Raises `subprocess.CalledProcessError` when the command fails to execute.
 
@@ -35,6 +39,6 @@ def check_silent(cmd: list[str | Path]) -> str:
     return subprocess.check_output(
         args=cmd,
         stderr=subprocess.DEVNULL,
-        timeout=20,
+        timeout=timeout,
         text=True,
     )

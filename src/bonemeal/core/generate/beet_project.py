@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from tomlkit import TOMLDocument, array, document, dump, inline_table, table
 
 from bonemeal.cli.errors import BoneMealError
-from bonemeal.core.utils import run_silent
+from bonemeal.core.commands import run
 
 if TYPE_CHECKING:
     from bonemeal.core.mc_version import MCVersion
@@ -102,7 +102,7 @@ def generate_beet_project(
     Path.mkdir(path / "src" / "assets" / path.name, parents=True)
 
     try:
-        run_silent(["uv", "venv", ".venv"])
-        run_silent(["uv", "sync"])
+        run(["uv", "venv", ".venv"])
+        run(["uv", "sync"])
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         raise UVError from err
