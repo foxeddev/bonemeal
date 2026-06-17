@@ -11,7 +11,7 @@ from bonemeal.cli.prompts import (
     mc_version_prompt,
     path_prompt,
 )
-from bonemeal.core.generate.beet_project import generate_beet_project
+from bonemeal.core.generators.beet_project import generate_beet_project
 from bonemeal.core.mc_version import fetch_mc_versions
 
 

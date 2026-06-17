@@ -10,7 +10,7 @@ from bonemeal.cli.prompts import (
     mc_version_prompt,
     path_prompt,
 )
-from bonemeal.core.generate.data_pack import generate_data_pack
+from bonemeal.core.generators.data_pack import generate_data_pack
 from bonemeal.core.mc_version import fetch_mc_versions
 
 
