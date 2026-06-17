@@ -1,4 +1,4 @@
-"""Classes and helpers related to Minecraft versions."""
+"""Utitities for handling Minecraft versions."""
 
 import enum
 from dataclasses import dataclass
