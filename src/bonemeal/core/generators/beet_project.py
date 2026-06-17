@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from tomlkit import TOMLDocument, array, document, dump, inline_table, table
 
-from bonemeal.cli.errors import BoneMealError
 from bonemeal.core.commands import run
+from bonemeal.core.error import BoneMealError
 
 if TYPE_CHECKING:
     from bonemeal.core.mc_version import MCVersion

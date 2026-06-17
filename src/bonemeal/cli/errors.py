@@ -1,22 +1,14 @@
-"""Base error classes and decorator."""
+"""Error decorator for CLI commands."""
 
 import functools
 import sys
 from typing import TYPE_CHECKING, Any
 
 from bonemeal.cli.components.message import error_message
+from bonemeal.core.error import BoneMealError
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-
-    from prompt_toolkit.formatted_text import AnyFormattedText
-
-
-class BoneMealError(BaseException):
-    """The base error class for the CLI."""
-
-    title: AnyFormattedText
-    description: AnyFormattedText = None
 
 
 class UserCancelledError(BoneMealError):

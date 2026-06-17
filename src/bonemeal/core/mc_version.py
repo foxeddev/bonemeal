@@ -7,7 +7,7 @@ from typing import Any
 
 import requests
 
-from bonemeal.cli.errors import BoneMealError
+from bonemeal.core.error import BoneMealError
 
 
 class MCVersionType(enum.Enum):
