@@ -2,8 +2,8 @@
 
 import rich_click
 
-from bonemeal.cli.common.messages import welcome_message
-from bonemeal.cli.common.prompts import (
+from bonemeal.cli.commons.messages import welcome_message
+from bonemeal.cli.commons.prompts import (
     PromptMode,
     author_prompt,
     description_prompt,
