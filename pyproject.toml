@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "bonemeal"
-version = "0.1.2"
+version = "0.3.0"
 dependencies = [
     "click>=8.3.3",
     "prompt-toolkit>=3.0.52",
@@ -22,7 +22,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["minecraft", "pack", "management", "cli"]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Natural Language :: English",
