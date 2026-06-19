@@ -1,6 +1,7 @@
 """Common prompts used by multiple commands."""
 
 import enum
+import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -75,6 +76,8 @@ def path_prompt(
     # user accepts to overwrite
 
     send2trash(path)
+    if path.is_dir():
+        shutil.rmtree(path)
     path.mkdir(parents=True)
     return path
 
