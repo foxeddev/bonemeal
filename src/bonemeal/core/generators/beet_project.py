@@ -102,7 +102,6 @@ def generate_beet_project(
     Path.mkdir(path / "src" / "assets" / path.name, parents=True)
 
     try:
-        run(["uv", "venv", ".venv"])
         run(["uv", "sync"])
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         raise UVError from err
