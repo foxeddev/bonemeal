@@ -9,6 +9,7 @@ from bonemeal.cli.commons.prompts import (
     mc_version_prompt,
     path_prompt,
 )
+from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.data_pack import generate_data_pack
@@ -27,7 +28,11 @@ def create_data_pack(
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
 
+    info_message("Creating data pack...")
+
     generate_data_pack(path=path, description=description, mc_version=mc_version)
+
+    success_message("Data pack created!")
 
 
 @rich_click.command("data-pack", aliases=["data-pack", "datapack", "dp"])

@@ -10,6 +10,7 @@ from bonemeal.cli.commons.prompts import (
     mc_version_prompt,
     path_prompt,
 )
+from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.beet_project import generate_beet_project
@@ -30,12 +31,16 @@ def create_beet_project(
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
 
+    info_message("Creating Beet project...")
+
     generate_beet_project(
         path=path,
         author=author,
         description=description,
         mc_version=mc_version,
     )
+
+    success_message("Beet project created!")
 
 
 @rich_click.command("beet-project", aliases=["beet-project", "beetproject", "beet"])

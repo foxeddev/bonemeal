@@ -9,6 +9,7 @@ from bonemeal.cli.commons.prompts import (
     mc_version_prompt,
     path_prompt,
 )
+from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.resource_pack import generate_resource_pack
@@ -27,7 +28,11 @@ def create_resource_pack(
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
 
+    info_message("Creating resource pack...")
+
     generate_resource_pack(path=path, description=description, mc_version=mc_version)
+
+    success_message("Resource project created!")
 
 
 @rich_click.command("resource-pack", aliases=["resource-pack", "resourcepack", "rp"])
