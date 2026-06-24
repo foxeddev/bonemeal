@@ -11,6 +11,8 @@ def run(
 ) -> None:
     """Run a command.
 
+    Raises `FileNotFoundError` when the command was not found.
+
     Raises `subprocess.CalledProcessError` when the command fails to execute.
 
     Raises `subprocess.TimeoutExpired` when the command doesn't respond within 20
@@ -18,10 +20,9 @@ def run(
     """
     subprocess.run(
         args=cmd,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
         check=True,
         timeout=timeout,
+        capture_output=True,
     )
 
 
@@ -30,6 +31,8 @@ def check(
     timeout: int = TIMEOUT,
 ) -> str:
     """Run a command and return the result.
+
+    Raises `FileNotFoundError` when the command was not found.
 
     Raises `subprocess.CalledProcessError` when the command fails to execute.
 
