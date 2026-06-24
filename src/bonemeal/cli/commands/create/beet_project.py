@@ -59,11 +59,11 @@ def create_beet_project(
 )
 @handle_errors
 def create_beet_project_cmd(
-    path_str: str | None = None,
-    prompt_level: PromptLevel = PromptLevel.DEFAULT,
-    author: str | None = None,
-    description: str | None = None,
-    mc_version_str: str | None = None,
+    path_str: str,
+    prompt_level: PromptLevel,
+    author: str,
+    description: str,
+    mc_version_str: str,
 ) -> None:
     """Create a new Beet project at PATH."""
     welcome_message()

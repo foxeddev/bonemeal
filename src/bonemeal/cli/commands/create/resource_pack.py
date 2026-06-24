@@ -50,10 +50,10 @@ def create_resource_pack(
 )
 @handle_errors
 def create_resource_pack_cmd(
-    path_str: str | None = None,
-    prompt_level: PromptLevel = PromptLevel.DEFAULT,
-    description: str | None = None,
-    mc_version_str: str | None = None,
+    path_str: str,
+    prompt_level: PromptLevel,
+    description: str,
+    mc_version_str: str,
 ) -> None:
     """Create a new resource pack at PATH."""
     welcome_message()
