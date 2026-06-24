@@ -63,11 +63,17 @@ def generate_pyproject_toml(
     return doc
 
 
-class UVError(BoneMealError):
+class UVNotFoundError(BoneMealError):
     """Error raised when the `uv`-command raises an error."""
 
     title = "Could not find uv installation!"
     description = "Make sure to install uv: https://docs.astral.sh/uv/"
+
+
+class UVExecutionError(BoneMealError):
+    """Error raised when the `uv`-command raises an error."""
+
+    title = "uv raised an error!"
 
 
 def generate_beet_project(
@@ -103,5 +109,7 @@ def generate_beet_project(
 
     try:
         run(["uv", "sync"])
+    except FileNotFoundError as err:
+        raise UVNotFoundError from err
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
-        raise UVError from err
+        raise UVExecutionError from err
