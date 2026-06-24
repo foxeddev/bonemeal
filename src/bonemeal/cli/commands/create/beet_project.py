@@ -4,7 +4,7 @@ import rich_click
 
 from bonemeal.cli.commons.messages import welcome_message
 from bonemeal.cli.commons.prompts import (
-    PromptMode,
+    PromptLevel,
     author_prompt,
     description_prompt,
     mc_version_prompt,
@@ -17,17 +17,18 @@ from bonemeal.core.generators.beet_project import generate_beet_project
 
 def create_beet_project(
     path_str: str | None = None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
+    prompt_level: PromptLevel = PromptLevel.DEFAULT,
     author: str | None = None,
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
     """Create a new Beet project at PATH."""
-    prompt_mode = prompt_mode or PromptMode.SHOW_PROMPTS
-    path = path_prompt(path_str, prompt_mode)
-    author = author_prompt(author, prompt_mode)
-    description = description_prompt(description, prompt_mode)
-    mc_version = mc_version_prompt(mc_version_str, prompt_mode)
+    prompt_level = prompt_level or PromptLevel.DEFAULT
+
+    path = path_prompt(path_str, prompt_level)
+    author = author_prompt(author, prompt_level)
+    description = description_prompt(description, prompt_level)
+    mc_version = mc_version_prompt(mc_version_str, prompt_level)
 
     generate_beet_project(
         path=path,
@@ -42,8 +43,8 @@ def create_beet_project(
 @rich_click.option(
     "-y",
     "--yes",
-    "prompt_mode",
-    flag_value=PromptMode.USE_DEFAULT,
+    "prompt_level",
+    flag_value=PromptLevel.NONE,
     help="Hide all interactive prompts and use default values instead.",
 )
 @rich_click.option("-a", "--author", help="The author of your Beet project.")
@@ -59,7 +60,7 @@ def create_beet_project(
 @handle_errors
 def create_beet_project_cmd(
     path_str: str | None = None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
+    prompt_level: PromptLevel = PromptLevel.DEFAULT,
     author: str | None = None,
     description: str | None = None,
     mc_version_str: str | None = None,
@@ -69,7 +70,7 @@ def create_beet_project_cmd(
 
     create_beet_project(
         path_str=path_str,
-        prompt_mode=prompt_mode,
+        prompt_level=prompt_level,
         author=author,
         description=description,
         mc_version_str=mc_version_str,

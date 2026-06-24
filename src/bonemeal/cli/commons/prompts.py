@@ -21,19 +21,19 @@ if TYPE_CHECKING:
     from bonemeal.core.fields.mc_version import MCVersion
 
 
-class PromptMode(enum.Enum):
-    """Whether to show prompts to the user or always use default values."""
+class PromptLevel(enum.IntEnum):
+    """What amount of prompts should be shown to the user."""
 
-    SHOW_PROMPTS = enum.auto()
-    USE_DEFAULT = enum.auto()
+    NONE = 0
+    LESS = 1
+    DEFAULT = 2
+    MORE = 3
+    ALL = 4
 
 
-def path_prompt(
-    path_str: str | None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
-) -> Path:
+def path_prompt(path_str: str | None, prompt_level: PromptLevel) -> Path:
     """Validate the path or show a prompt if none is specified."""
-    if not path_str and prompt_mode is PromptMode.SHOW_PROMPTS:
+    if not path_str and prompt_level > PromptLevel.NONE:
         path_str = text_prompt(
             title="Where do you want to create your project?",
             description="Press enter to use the current directory.",
@@ -82,12 +82,9 @@ def path_prompt(
     return path
 
 
-def description_prompt(
-    description: str | None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
-) -> str:
+def description_prompt(description: str | None, prompt_level: PromptLevel) -> str:
     """Return the description or show a prompt if none is specified."""
-    if not description and prompt_mode is PromptMode.SHOW_PROMPTS:
+    if not description and prompt_level > PromptLevel.DEFAULT:
         description = text_prompt(
             title="What description do you want to add to your project?",
             description="Press enter to skip.",
@@ -96,14 +93,11 @@ def description_prompt(
     return description or ""
 
 
-def author_prompt(
-    author: str | None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
-) -> str:
+def author_prompt(author: str | None, prompt_level: PromptLevel) -> str:
     """Return the author or show a prompt if none is specified."""
     author = get_git_username() or author
 
-    if not author and prompt_mode is PromptMode.SHOW_PROMPTS:
+    if not author and prompt_level > PromptLevel.DEFAULT:
         author = text_prompt(
             title="What author do you want to set to your project?",
             description="Press enter to skip.",
@@ -114,10 +108,10 @@ def author_prompt(
 
 def mc_version_prompt(
     mc_version_str: str | None,
-    prompt_mode: PromptMode = PromptMode.SHOW_PROMPTS,
+    prompt_level: PromptLevel,
 ) -> MCVersion:
     """Validate the Minecraft version or show a prompt if none is specified."""
-    if not mc_version_str and prompt_mode is PromptMode.SHOW_PROMPTS:
+    if not mc_version_str and prompt_level > PromptLevel.DEFAULT:
         mc_version_str = text_prompt(
             title="What Minecraft version do you want to use?",
             description="Press enter to use the latest release.",
