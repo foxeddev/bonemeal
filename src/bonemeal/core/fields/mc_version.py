@@ -26,8 +26,8 @@ class MCVersion:
     id: str
     name: str
     type: MCVersionType
-    data_pack_version: tuple[int, int]
-    resource_pack_version: tuple[int, int]
+    data_pack_version: int | tuple[int, int]
+    resource_pack_version: int | tuple[int, int]
 
 
 class ParseMCVersionsError(BoneMealError):
@@ -48,11 +48,15 @@ def parse_mc_versions(mc_versions: list[Any]) -> dict[str, MCVersion]:
                 data_pack_version=(
                     version["data_pack_version"],
                     version["data_pack_version_minor"],
-                ),
+                )
+                if version["data_pack_version_minor"]
+                else version["data_pack_version"],
                 resource_pack_version=(
                     version["resource_pack_version"],
                     version["resource_pack_version_minor"],
-                ),
+                )
+                if version["resource_pack_version_minor"]
+                else version["resource_pack_version"],
             )
             for i, version in enumerate(mc_versions)
         }

@@ -11,7 +11,6 @@ from bonemeal.cli.commons.prompts import (
 )
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
-from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.data_pack import generate_data_pack
 
 
@@ -50,12 +49,10 @@ def create_data_pack(
 )
 @rich_click.option("-d", "--description", help="The description of your data pack.")
 @rich_click.option(
-    "-mc",
+    "-m",
     "--mc-version",
     "mc_version_str",
-    type=rich_click.Choice(fetch_mc_versions().values(), case_sensitive=False),
     help="The Minecraft version you want to create a data pack for.",
-    show_choices=False,
 )
 @handle_errors
 def create_data_pack_cmd(

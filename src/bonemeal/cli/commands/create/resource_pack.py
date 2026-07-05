@@ -50,12 +50,10 @@ def create_resource_pack(
 )
 @rich_click.option("-d", "--description", help="The description of your resource pack.")
 @rich_click.option(
-    "-mc",
+    "-m",
     "--mc-version",
     "mc_version_str",
-    type=rich_click.Choice(fetch_mc_versions().values(), case_sensitive=False),
     help="The Minecraft version you want to create a resource pack for.",
-    show_choices=False,
 )
 @handle_errors
 def create_resource_pack_cmd(

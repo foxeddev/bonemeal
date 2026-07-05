@@ -19,8 +19,8 @@ def generate_resource_pack(
             {
                 "pack": {
                     "description": description,
-                    "min_format": [mc_version.resource_pack_version],
-                    "max_format": [mc_version.resource_pack_version],
+                    "min_format": mc_version.resource_pack_version,
+                    "max_format": mc_version.resource_pack_version,
                 },
             },
             fp=f,

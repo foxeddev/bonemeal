@@ -12,7 +12,6 @@ from bonemeal.cli.commons.prompts import (
 )
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
-from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.beet_project import generate_beet_project
 
 
@@ -59,12 +58,10 @@ def create_beet_project(
 @rich_click.option("-a", "--author", help="The author of your Beet project.")
 @rich_click.option("-d", "--description", help="The description of your Beet project.")
 @rich_click.option(
-    "-mc",
+    "-m",
     "--mc-version",
     "mc_version_str",
-    type=rich_click.Choice(fetch_mc_versions().values(), case_sensitive=False),
-    help="The Minecraft version you want to create a data pack for.",
-    show_choices=False,
+    help="The Minecraft version you want to create a Beet project for.",
 )
 @handle_errors
 def create_beet_project_cmd(
