@@ -35,7 +35,7 @@ def create_resource_pack(
     success_message("Resource project created!")
 
 
-@rich_click.command("resource-pack", aliases=["resource-pack", "resourcepack", "rp"])
+@rich_click.command("resource-pack", aliases=["resource-pack", "rp"])
 @rich_click.argument(
     "path",
     required=False,

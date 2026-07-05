@@ -43,7 +43,7 @@ def create_beet_project(
     success_message("Beet project created!")
 
 
-@rich_click.command("beet-project", aliases=["beet-project", "beetproject", "beet"])
+@rich_click.command("beet-project", aliases=["beet-project", "beet"])
 @rich_click.argument(
     "path",
     required=False,
