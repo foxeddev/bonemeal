@@ -11,7 +11,6 @@ from bonemeal.cli.commons.prompts import (
 )
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
-from bonemeal.core.fields.mc_version import fetch_mc_versions
 from bonemeal.core.generators.resource_pack import generate_resource_pack
 
 
