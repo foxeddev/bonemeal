@@ -47,7 +47,11 @@ def create_data_pack(
     flag_value=PromptLevel.NONE,
     help="Hide all interactive prompts and use default values instead.",
 )
-@rich_click.option("-d", "--description", help="The description of your data pack.")
+@rich_click.option(
+    "-d",
+    "--description",
+    help="The description of your data pack.",
+)
 @rich_click.option(
     "-m",
     "--mc-version",

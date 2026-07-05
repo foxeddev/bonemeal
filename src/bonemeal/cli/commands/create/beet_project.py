@@ -55,8 +55,16 @@ def create_beet_project(
     flag_value=PromptLevel.NONE,
     help="Hide all interactive prompts and use default values instead.",
 )
-@rich_click.option("-a", "--author", help="The author of your Beet project.")
-@rich_click.option("-d", "--description", help="The description of your Beet project.")
+@rich_click.option(
+    "-a",
+    "--author",
+    help="The author of your Beet project.",
+)
+@rich_click.option(
+    "-d",
+    "--description",
+    help="The description of your Beet project.",
+)
 @rich_click.option(
     "-m",
     "--mc-version",
