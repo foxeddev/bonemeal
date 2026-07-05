@@ -6,12 +6,14 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.mc_version import MCVersion
+    from bonemeal.core.fields.template import Template
 
 
 def generate_data_pack(
     path: Path,
     description: str,
     mc_version: MCVersion,
+    template: Template,
 ) -> None:
     """Generate a new data pack."""
     with Path.open(path / "pack.mcmeta", "x") as f:

@@ -8,10 +8,12 @@ from bonemeal.cli.commons.prompts import (
     description_prompt,
     mc_version_prompt,
     path_prompt,
+    template_prompt,
 )
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.generators.data_pack import generate_data_pack
+from bonemeal.core.project_types.data_pack import DATA_PACK_TEMPLATES
 
 
 def create_data_pack(
@@ -19,6 +21,7 @@ def create_data_pack(
     prompt_level: PromptLevel = PromptLevel.DEFAULT,
     description: str | None = None,
     mc_version_str: str | None = None,
+    template_str: str | None = None,
 ) -> None:
     """Create a new data pack."""
     prompt_level = prompt_level or PromptLevel.DEFAULT
@@ -26,10 +29,21 @@ def create_data_pack(
     path = path_prompt(path_str, prompt_level)
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
+    template = template_prompt(
+        template_str=template_str,
+        templates=DATA_PACK_TEMPLATES,
+        default_template=DATA_PACK_TEMPLATES["default"],
+        prompt_level=prompt_level,
+    )
 
     info_message("Creating data pack...")
 
-    generate_data_pack(path=path, description=description, mc_version=mc_version)
+    generate_data_pack(
+        path=path,
+        description=description,
+        mc_version=mc_version,
+        template=template,
+    )
 
     success_message("Data pack created!")
 
@@ -58,12 +72,19 @@ def create_data_pack(
     "mc_version_str",
     help="The Minecraft version you want to create a data pack for.",
 )
+@rich_click.option(
+    "-t",
+    "--template",
+    "template_str",
+    help="The template you want to use.",
+)
 @handle_errors
 def create_data_pack_cmd(
     path: str,
     prompt_level: PromptLevel,
     description: str,
     mc_version_str: str,
+    template_str: str,
 ) -> None:
     """Create a new data pack."""
     welcome_message()
@@ -73,4 +94,5 @@ def create_data_pack_cmd(
         prompt_level=prompt_level,
         description=description,
         mc_version_str=mc_version_str,
+        template_str=template_str,
     )

@@ -16,6 +16,7 @@ from bonemeal.core.fields.mc_version import (
     find_mc_version,
     get_latest_mc_release,
 )
+from bonemeal.core.fields.template import Template, find_template
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.mc_version import MCVersion
@@ -119,4 +120,31 @@ def mc_version_prompt(
 
     return (
         find_mc_version(mc_version_str) if mc_version_str else get_latest_mc_release()
+    )
+
+
+def template_prompt(
+    template_str: str | None,
+    templates: dict[str, Template],
+    default_template: Template,
+    prompt_level: PromptLevel,
+) -> Template:
+    """Validate the template or show a prompt if none is specified."""
+    if not template_str and prompt_level > PromptLevel.LESS:
+        return single_option_prompt(
+            title="What template do you want to use?",
+            options=[
+                Choice(
+                    value=template,
+                    title=template.title,
+                    description=template.description,
+                )
+                for template in templates.values()
+            ],
+        )
+
+    return (
+        find_template(query=template_str, templates=templates)
+        if template_str
+        else default_template
     )
