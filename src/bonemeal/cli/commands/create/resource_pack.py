@@ -21,7 +21,7 @@ def create_resource_pack(
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
-    """Create a new resource pack at PATH."""
+    """Create a new resource pack."""
     prompt_level = prompt_level or PromptLevel.DEFAULT
 
     path = path_prompt(path_str, prompt_level)
@@ -36,7 +36,11 @@ def create_resource_pack(
 
 
 @rich_click.command("resource-pack", aliases=["resource-pack", "resourcepack", "rp"])
-@rich_click.argument("path_str", required=False)
+@rich_click.argument(
+    "path",
+    required=False,
+    help="Where you want to create your resource pack at.",
+)
 @rich_click.option(
     "-y",
     "--yes",
@@ -55,16 +59,16 @@ def create_resource_pack(
 )
 @handle_errors
 def create_resource_pack_cmd(
-    path_str: str,
+    path: str,
     prompt_level: PromptLevel,
     description: str,
     mc_version_str: str,
 ) -> None:
-    """Create a new resource pack at PATH."""
+    """Create a new resource pack."""
     welcome_message()
 
     create_resource_pack(
-        path_str=path_str,
+        path_str=path,
         prompt_level=prompt_level,
         description=description,
         mc_version_str=mc_version_str,

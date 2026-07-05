@@ -23,7 +23,7 @@ def create_beet_project(
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
-    """Create a new Beet project at PATH."""
+    """Create a new Beet project."""
     prompt_level = prompt_level or PromptLevel.DEFAULT
 
     path = path_prompt(path_str, prompt_level)
@@ -44,7 +44,11 @@ def create_beet_project(
 
 
 @rich_click.command("beet-project", aliases=["beet-project", "beetproject", "beet"])
-@rich_click.argument("path_str", required=False)
+@rich_click.argument(
+    "path",
+    required=False,
+    help="Where you want to create your Beet project at.",
+)
 @rich_click.option(
     "-y",
     "--yes",
@@ -64,17 +68,17 @@ def create_beet_project(
 )
 @handle_errors
 def create_beet_project_cmd(
-    path_str: str,
+    path: str,
     prompt_level: PromptLevel,
     author: str,
     description: str,
     mc_version_str: str,
 ) -> None:
-    """Create a new Beet project at PATH."""
+    """Create a new Beet project."""
     welcome_message()
 
     create_beet_project(
-        path_str=path_str,
+        path_str=path,
         prompt_level=prompt_level,
         author=author,
         description=description,
