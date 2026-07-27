@@ -13,7 +13,10 @@ from bonemeal.cli.commons.prompts import (
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.generators.data_pack import generate_data_pack
-from bonemeal.core.project_types.data_pack import DATA_PACK_TEMPLATES
+from bonemeal.core.project_types.data_pack import (
+    DATA_PACK_TEMPLATES,
+    DEFAULT_DATA_PACK_TEMPLATE,
+)
 
 
 def create_data_pack(
@@ -32,7 +35,7 @@ def create_data_pack(
     template = template_prompt(
         template_str=template_str,
         templates=DATA_PACK_TEMPLATES,
-        default_template=DATA_PACK_TEMPLATES["default"],
+        default_template=DEFAULT_DATA_PACK_TEMPLATE,
         prompt_level=prompt_level,
     )
 

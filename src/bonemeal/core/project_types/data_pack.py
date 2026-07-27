@@ -21,3 +21,5 @@ DATA_PACK_TEMPLATES = {
         ],
     ),
 }
+
+DEFAULT_DATA_PACK_TEMPLATE = DATA_PACK_TEMPLATES["default"]
