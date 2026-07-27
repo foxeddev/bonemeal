@@ -5,62 +5,14 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from tomlkit import TOMLDocument, array, document, dump, inline_table, table
+import tomlkit
 
 from bonemeal.core.errors.main import BoneMealError
 from bonemeal.core.utils.commands import run
 
 if TYPE_CHECKING:
+    from bonemeal.core.fields.config_type import ConfigType
     from bonemeal.core.fields.mc_version import MCVersion
-
-
-def generate_pyproject_toml(
-    project_id: str,
-    project_name: str,
-    author: str,
-    description: str,
-    mc_version: MCVersion,
-) -> TOMLDocument:
-    """Generate a `pyproject.toml`-file for a Beet project."""
-    doc = document()
-
-    project = table()
-    project["name"] = project_id
-    project["version"] = "0.1.0"
-    project["dependencies"] = [
-        "beet>=0.115.0",
-        "bolt>=0.50.1",
-        "bolt-expressions>=0.19.2",
-        "mecha>=0.103.0",
-        "ruff>=0.15.17",
-    ]
-    project["requires-python"] = ">=3.14"
-    project["authors"] = array()
-    project["authors"].append(inline_table().add("name", author))
-    project["description"] = description
-    project["readme"] = "README.md"
-    project["license"] = "MIT"
-    project["license-files"] = ["LICENSE"]
-
-    doc["project"] = project
-
-    tool = table()
-    beet = table()
-
-    beet["id"] = project_id
-    beet["name"] = project_name
-    beet["version"] = "0.1.0"
-    beet["author"] = author
-    beet["description"] = description
-    beet["minecraft"] = mc_version.id
-    beet["output"] = "build"
-    beet["data_pack"] = inline_table().add("load", "src")
-    beet["resource_pack"] = inline_table().add("load", "src")
-
-    tool["beet"] = beet
-    doc["tool"] = tool
-
-    return doc
 
 
 class UVNotFoundError(BoneMealError):
@@ -81,6 +33,7 @@ def generate_beet_project(
     author: str,
     description: str,
     mc_version: MCVersion,
+    config_type: ConfigType,
 ) -> None:
     """Generate a new data pack."""
     path = path.expanduser().resolve()
@@ -89,23 +42,72 @@ def generate_beet_project(
 
     os.chdir(path)
 
+    # Generate Beet config
+
+    config = {
+        "id": project_id,
+        "name": project_name,
+        "version": "0.1.0",
+        "author": author,
+        "description": description,
+        "minecraft": mc_version.id,
+        "output": "build",
+        "data_pack": {
+            "load": [
+                "src",
+            ],
+        },
+        "resource_pack": {
+            "load": [
+                "src",
+            ],
+        },
+    }
+
+    # Write Beet config
+
+    with Path.open(path / config_type.file, "x") as f:
+        config_type.write(config, f)
+
+    # Generate pyproject.toml
+
+    pyproject_toml = {
+        "name": project_id,
+        "version": "0.1.0",
+        "dependencies": [
+            "beet>=0.115.0",
+            "bolt>=0.50.1",
+            "bolt-expressions>=0.19.2",
+            "mecha>=0.103.0",
+            "ruff>=0.15.17",
+        ],
+        "requires-python": ">=3.14",
+        "authors": [{"name": author}],
+        "description": description,
+        "readme": "README.md",
+        "license": "MIT",
+        "license-files": ["LICENSE"],
+    }
+
+    # Write pyproject.toml
+
     with Path.open(path / "pyproject.toml", "x") as f:
-        dump(
-            generate_pyproject_toml(
-                project_id=project_id,
-                project_name=project_name,
-                author=author,
-                description=description,
-                mc_version=mc_version,
-            ),
+        tomlkit.dump(
+            pyproject_toml,
             fp=f,
         )
+
+    # Write README.md
 
     with Path.open(path / "README.md", "x") as f:
         f.write(f"# {project_name}{f'\n\n{description}' if description else ''}\n")
 
+    # Make namespaced directories
+
     Path.mkdir(path / "src" / "data" / path.name, parents=True)
     Path.mkdir(path / "src" / "assets" / path.name, parents=True)
+
+    # Set up uv
 
     try:
         run(["uv", "sync"])

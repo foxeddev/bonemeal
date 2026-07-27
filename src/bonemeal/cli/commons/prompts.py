@@ -11,6 +11,7 @@ from bonemeal.cli.components.message import warning_message
 from bonemeal.cli.components.prompt import Choice, single_option_prompt, text_prompt
 from bonemeal.cli.utils.errors import UserCancelledError
 from bonemeal.core.fields.author import get_git_username
+from bonemeal.core.fields.config_type import find_config_type
 from bonemeal.core.fields.mc_version import (
     MCVersion,
     find_mc_version,
@@ -19,6 +20,7 @@ from bonemeal.core.fields.mc_version import (
 from bonemeal.core.fields.template import Template, find_template
 
 if TYPE_CHECKING:
+    from bonemeal.core.fields.config_type import ConfigType
     from bonemeal.core.fields.mc_version import MCVersion
 
 
@@ -120,6 +122,33 @@ def mc_version_prompt(
 
     return (
         find_mc_version(mc_version_str) if mc_version_str else get_latest_mc_release()
+    )
+
+
+def config_type_prompt(
+    config_type_str: str | None,
+    config_types: dict[str, ConfigType],
+    default_config_type: ConfigType,
+    prompt_level: PromptLevel,
+) -> ConfigType:
+    """Validate the config type or show a prompt if none is specified."""
+    if not config_type_str and prompt_level > PromptLevel.DEFAULT:
+        return single_option_prompt(
+            title="What file type do you want to use for your config files?",
+            options=[
+                Choice(
+                    value=config_type,
+                    title=config_type.title,
+                    description=config_type.description,
+                )
+                for config_type in config_types.values()
+            ],
+        )
+
+    return (
+        find_config_type(query=config_type_str, config_types=config_types)
+        if config_type_str
+        else default_config_type
     )
 
 
