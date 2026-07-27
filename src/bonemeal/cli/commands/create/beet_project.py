@@ -56,17 +56,14 @@ def create_beet_project(
     help="Hide all interactive prompts and use default values instead.",
 )
 @rich_click.option(
-    "-a",
     "--author",
     help="The author of your Beet project.",
 )
 @rich_click.option(
-    "-d",
     "--description",
     help="The description of your Beet project.",
 )
 @rich_click.option(
-    "-m",
     "--mc-version",
     "mc_version_str",
     help="The Minecraft version you want to create a Beet project for.",

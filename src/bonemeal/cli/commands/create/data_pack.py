@@ -62,18 +62,15 @@ def create_data_pack(
     help="Hide all interactive prompts and use default values instead.",
 )
 @rich_click.option(
-    "-d",
     "--description",
     help="The description of your data pack.",
 )
 @rich_click.option(
-    "-m",
     "--mc-version",
     "mc_version_str",
     help="The Minecraft version you want to create a data pack for.",
 )
 @rich_click.option(
-    "-t",
     "--template",
     "template_str",
     help="The template you want to use.",
