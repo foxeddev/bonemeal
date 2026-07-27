@@ -24,13 +24,11 @@ class TemplateNotFoundError(BoneMealError):
 
 def find_template(query: str, templates: dict[str, Template]) -> Template:
     """Return the first template whose title matches the query."""
-    query = query.lower()
-
     try:
         return next(
             template
             for template in templates.values()
-            if template.title.lower() == query
+            if template.title.lower() == query.lower()
         )
 
     except StopIteration as err:
