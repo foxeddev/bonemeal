@@ -9,6 +9,7 @@ import tomlkit
 
 from bonemeal.core.errors.main import BoneMealError
 from bonemeal.core.utils.commands import run
+from bonemeal.core.utils.generators import generate_mit_license
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.config_type import ConfigType
@@ -101,6 +102,9 @@ def generate_beet_project(
 
     with Path.open(path / "README.md", "x") as f:
         f.write(f"# {project_name}{f'\n\n{description}' if description else ''}\n")
+
+    with Path.open(path / "LICENSE", "x") as f:
+        f.write(generate_mit_license(author))
 
     # Make namespaced directories
 
