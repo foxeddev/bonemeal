@@ -45,6 +45,7 @@ select = ["ALL"]
 ignore = [
     "PLR0913", # too many arguments
     "TD003",   # issue link for todos
+    "CPY001",  # no copyright notice
 ]
 
 [dependency-groups]
