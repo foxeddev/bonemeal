@@ -5,6 +5,7 @@ import rich_click
 from bonemeal.cli.commons.messages import welcome_message
 from bonemeal.cli.commons.prompts import (
     PromptLevel,
+    author_prompt,
     description_prompt,
     mc_version_prompt,
     path_prompt,
@@ -22,6 +23,7 @@ from bonemeal.core.project_types.data_pack import (
 def create_data_pack(
     path_str: str | None = None,
     prompt_level: PromptLevel = PromptLevel.DEFAULT,
+    author: str | None = None,
     description: str | None = None,
     mc_version_str: str | None = None,
     template_str: str | None = None,
@@ -30,6 +32,7 @@ def create_data_pack(
     prompt_level = prompt_level or PromptLevel.DEFAULT
 
     path = path_prompt(path_str, prompt_level)
+    author = author_prompt(author, prompt_level)
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
     template = template_prompt(
@@ -43,6 +46,7 @@ def create_data_pack(
 
     generate_data_pack(
         path=path,
+        author=author,
         description=description,
         mc_version=mc_version,
         template=template,
@@ -65,6 +69,10 @@ def create_data_pack(
     help="Hide all interactive prompts and use default values instead.",
 )
 @rich_click.option(
+    "--author",
+    help="The author of your data pack.",
+)
+@rich_click.option(
     "--description",
     help="The description of your data pack.",
 )
@@ -82,6 +90,7 @@ def create_data_pack(
 def create_data_pack_cmd(
     path: str,
     prompt_level: PromptLevel,
+    author: str,
     description: str,
     mc_version_str: str,
     template_str: str,
@@ -92,6 +101,7 @@ def create_data_pack_cmd(
     create_data_pack(
         path_str=path,
         prompt_level=prompt_level,
+        author=author,
         description=description,
         mc_version_str=mc_version_str,
         template_str=template_str,

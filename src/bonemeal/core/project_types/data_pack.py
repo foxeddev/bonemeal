@@ -13,9 +13,11 @@ DATA_PACK_TEMPLATES = {
     ),
     "default": Template(
         title="Default",
-        description="pack.mcmeta, tick and load functions",
+        description="pack.mcmeta, README, license, tick and load functions",
         includes=[
             "pack_mcmeta",
+            "readme",
+            "license",
             "namespace",
             "load_tick",
         ],

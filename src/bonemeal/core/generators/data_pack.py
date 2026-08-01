@@ -1,8 +1,15 @@
 """Function for generating a new data pack."""
 
 import json
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from bonemeal.core.utils.generators import (
+    generate_mit_license,
+    generate_readme,
+    id_to_name,
+)
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.mc_version import MCVersion
@@ -11,12 +18,17 @@ if TYPE_CHECKING:
 
 def generate_data_pack(
     path: Path,
+    author: str,
     description: str,
     mc_version: MCVersion,
     template: Template,
 ) -> None:
     """Generate a new data pack."""
-    namespace = path.name
+    path = path.expanduser().resolve()
+    os.chdir(path)
+
+    project_id = path.name
+    project_name = id_to_name(project_id)
 
     if "pack_mcmeta" in template.includes:
         with Path.open(path / "pack.mcmeta", "x") as f:
@@ -32,8 +44,16 @@ def generate_data_pack(
                 indent=2,
             )
 
+    if "readme" in template.includes:
+        with Path.open(path / "README.md", "x") as f:
+            f.write(generate_readme(project_name, description))
+
+    if "license" in template.includes:
+        with Path.open(path / "LICENSE", "x") as f:
+            f.write(generate_mit_license(author))
+
     if "namespace" in template.includes:
-        Path.mkdir(path / "data" / namespace, parents=True, exist_ok=True)
+        Path.mkdir(path / "data" / project_id, parents=True, exist_ok=True)
 
         if "load_tick" in template.includes:
             load_tag_path = (
@@ -44,7 +64,7 @@ def generate_data_pack(
                 json.dump(
                     {
                         "values": [
-                            f"{namespace}:load",
+                            f"{project_id}:load",
                         ],
                     },
                     f,
@@ -59,7 +79,7 @@ def generate_data_pack(
                 json.dump(
                     {
                         "values": [
-                            f"{namespace}:tick",
+                            f"{project_id}:tick",
                         ],
                     },
                     f,
@@ -67,13 +87,13 @@ def generate_data_pack(
                 )
 
             load_function_path = (
-                path / "data" / namespace / "function" / "load.mcfunction"
+                path / "data" / project_id / "function" / "load.mcfunction"
             )
             Path.mkdir(load_function_path.parent, parents=True, exist_ok=True)
             Path.touch(load_function_path)
 
             tick_function_path = (
-                path / "data" / namespace / "function" / "tick.mcfunction"
+                path / "data" / project_id / "function" / "tick.mcfunction"
             )
             Path.mkdir(tick_function_path.parent, parents=True, exist_ok=True)
             Path.touch(tick_function_path)
