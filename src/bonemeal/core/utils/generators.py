@@ -3,6 +3,11 @@
 import datetime
 
 
+def id_to_name(project_id: str) -> str:
+    """Convert a project ID to a properly formatted name."""
+    return project_id.replace("-", " ").replace("_", " ").strip().capitalize()
+
+
 def generate_mit_license(copyright_holder: str, year: int | None = None) -> str:
     """Generate an MIT license for the specified copyright holder."""
     year = year or datetime.datetime.now(tz=datetime.UTC).date().year
@@ -28,3 +33,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+
+def generate_readme(title: str, description: str | None = None) -> str:
+    """Generate a README file."""
+    return f"# {title}{f'\n\n{description}' if description else ''}\n"

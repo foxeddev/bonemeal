@@ -9,7 +9,11 @@ import tomlkit
 
 from bonemeal.core.errors.main import BoneMealError
 from bonemeal.core.utils.commands import run
-from bonemeal.core.utils.generators import generate_mit_license
+from bonemeal.core.utils.generators import (
+    generate_mit_license,
+    generate_readme,
+    id_to_name,
+)
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.config_type import ConfigType
@@ -38,10 +42,10 @@ def generate_beet_project(
 ) -> None:
     """Generate a new data pack."""
     path = path.expanduser().resolve()
-    project_id = path.name
-    project_name = project_id.replace("-", " ").replace("_", " ").strip().capitalize()
-
     os.chdir(path)
+
+    project_id = path.name
+    project_name = id_to_name(project_id)
 
     # Generate Beet config
 
@@ -101,7 +105,7 @@ def generate_beet_project(
     # Write README.md
 
     with Path.open(path / "README.md", "x") as f:
-        f.write(f"# {project_name}{f'\n\n{description}' if description else ''}\n")
+        f.write(generate_readme(project_name, description))
 
     with Path.open(path / "LICENSE", "x") as f:
         f.write(generate_mit_license(author))
