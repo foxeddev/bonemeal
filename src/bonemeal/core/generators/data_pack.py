@@ -53,13 +53,13 @@ def generate_data_pack(
             f.write(generate_mit_license(author))
 
     if "namespace" in template.includes:
-        Path.mkdir(path / "data" / project_id, parents=True, exist_ok=True)
+        Path.mkdir(path / "data" / project_id, parents=True)
 
         if "load_tick" in template.includes:
             load_tag_path = (
                 path / "data" / "minecraft" / "tags" / "function" / "load.json"
             )
-            Path.mkdir(load_tag_path.parent, parents=True, exist_ok=True)
+            Path.mkdir(load_tag_path.parent, parents=True)
             with Path.open(load_tag_path, "x") as f:
                 json.dump(
                     {
@@ -74,7 +74,7 @@ def generate_data_pack(
             tick_tag_path = (
                 path / "data" / "minecraft" / "tags" / "function" / "tick.json"
             )
-            Path.mkdir(tick_tag_path.parent, parents=True, exist_ok=True)
+            Path.mkdir(tick_tag_path.parent, parents=True)
             with Path.open(tick_tag_path, "x") as f:
                 json.dump(
                     {
@@ -89,11 +89,11 @@ def generate_data_pack(
             load_function_path = (
                 path / "data" / project_id / "function" / "load.mcfunction"
             )
-            Path.mkdir(load_function_path.parent, parents=True, exist_ok=True)
+            Path.mkdir(load_function_path.parent, parents=True)
             Path.touch(load_function_path)
 
             tick_function_path = (
                 path / "data" / project_id / "function" / "tick.mcfunction"
             )
-            Path.mkdir(tick_function_path.parent, parents=True, exist_ok=True)
+            Path.mkdir(tick_function_path.parent, parents=True)
             Path.touch(tick_function_path)
