@@ -128,7 +128,7 @@ def mc_version_prompt(
 def config_type_prompt(
     config_type_str: str | None,
     config_types: dict[str, ConfigType],
-    default_config_type: ConfigType,
+    default_config_type: int,
     prompt_level: PromptLevel,
 ) -> ConfigType:
     """Validate the config type or show a prompt if none is specified."""
@@ -143,19 +143,20 @@ def config_type_prompt(
                 )
                 for config_type in config_types.values()
             ],
+            default_option=default_config_type,
         )
 
     return (
         find_config_type(query=config_type_str, config_types=config_types)
         if config_type_str
-        else default_config_type
+        else list(config_types.values())[default_config_type]
     )
 
 
 def template_prompt(
     template_str: str | None,
     templates: dict[str, Template],
-    default_template: Template,
+    default_template: int,
     prompt_level: PromptLevel,
 ) -> Template:
     """Validate the template or show a prompt if none is specified."""
@@ -170,10 +171,11 @@ def template_prompt(
                 )
                 for template in templates.values()
             ],
+            default_option=default_template,
         )
 
     return (
         find_template(query=template_str, templates=templates)
         if template_str
-        else default_template
+        else list(templates.values())[default_template]
     )
