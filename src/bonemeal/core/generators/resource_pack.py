@@ -13,6 +13,7 @@ from bonemeal.core.utils.generators import (
 
 if TYPE_CHECKING:
     from bonemeal.core.fields.mc_version import MCVersion
+    from bonemeal.core.fields.template import Template
 
 
 def generate_resource_pack(
@@ -20,6 +21,7 @@ def generate_resource_pack(
     author: str,
     description: str,
     mc_version: MCVersion,
+    template: Template,
 ) -> None:
     """Generate a new resource pack."""
     path = path.expanduser().resolve()
@@ -28,23 +30,27 @@ def generate_resource_pack(
     project_id = path.name
     project_name = id_to_name(project_id)
 
-    with Path.open(path / "pack.mcmeta", "x") as f:
-        json.dump(
-            {
-                "pack": {
-                    "description": description,
-                    "min_format": mc_version.resource_pack_version,
-                    "max_format": mc_version.resource_pack_version,
+    if "pack_mcmeta" in template.includes:
+        with Path.open(path / "pack.mcmeta", "x") as f:
+            json.dump(
+                {
+                    "pack": {
+                        "description": description,
+                        "min_format": mc_version.resource_pack_version,
+                        "max_format": mc_version.resource_pack_version,
+                    },
                 },
-            },
-            fp=f,
-            indent=2,
-        )
+                fp=f,
+                indent=2,
+            )
 
-    with Path.open(path / "README.md", "x") as f:
-        f.write(generate_readme(project_name, description))
+    if "readme" in template.includes:
+        with Path.open(path / "README.md", "x") as f:
+            f.write(generate_readme(project_name, description))
 
-    with Path.open(path / "LICENSE", "x") as f:
-        f.write(generate_mit_license(author))
+    if "license" in template.includes:
+        with Path.open(path / "LICENSE", "x") as f:
+            f.write(generate_mit_license(author))
 
-    Path.mkdir(path / "assets" / project_id, parents=True)
+    if "namespace" in template.includes:
+        Path.mkdir(path / "assets" / project_id, parents=True, exist_ok=True)

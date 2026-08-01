@@ -6,6 +6,33 @@ import tomlkit
 import yaml
 
 from bonemeal.core.fields.config_type import ConfigType
+from bonemeal.core.fields.template import Template
+
+BEET_PROJECT_TEMPLATES = {
+    "minimal": Template(
+        title="Minimal",
+        description="only Beet config",
+        includes=[
+            "beet_config",
+            "namespace",
+        ],
+    ),
+    "default": Template(
+        title="Default",
+        description="Beet config, pyproject.toml, README, license, uv setup",
+        includes=[
+            "beet_config",
+            "pyproject_toml",
+            "readme",
+            "license",
+            "namespace",
+            "uv",
+        ],
+    ),
+}
+
+DEFAULT_BEET_PROJECT_TEMPLATE = 1
+
 
 BEET_CONFIG_TYPES = {
     "json": ConfigType(

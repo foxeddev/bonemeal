@@ -10,13 +10,16 @@ from bonemeal.cli.commons.prompts import (
     description_prompt,
     mc_version_prompt,
     path_prompt,
+    template_prompt,
 )
 from bonemeal.cli.components.message import info_message, success_message
 from bonemeal.cli.utils.errors import handle_errors
 from bonemeal.core.generators.beet_project import generate_beet_project
 from bonemeal.core.project_types.beet_project import (
     BEET_CONFIG_TYPES,
+    BEET_PROJECT_TEMPLATES,
     DEFAULT_BEET_CONFIG_TYPE,
+    DEFAULT_BEET_PROJECT_TEMPLATE,
 )
 
 
@@ -26,6 +29,7 @@ def create_beet_project(
     author: str | None = None,
     description: str | None = None,
     mc_version_str: str | None = None,
+    template_str: str | None = None,
     config_type_str: str | None = None,
 ) -> None:
     """Create a new Beet project."""
@@ -35,6 +39,12 @@ def create_beet_project(
     author = author_prompt(author, prompt_level)
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
+    template = template_prompt(
+        template_str=template_str,
+        templates=BEET_PROJECT_TEMPLATES,
+        default_template=DEFAULT_BEET_PROJECT_TEMPLATE,
+        prompt_level=prompt_level,
+    )
     config_type = config_type_prompt(
         config_type_str=config_type_str,
         config_types=BEET_CONFIG_TYPES,
@@ -49,6 +59,7 @@ def create_beet_project(
         author=author,
         description=description,
         mc_version=mc_version,
+        template=template,
         config_type=config_type,
     )
 
@@ -82,6 +93,11 @@ def create_beet_project(
     help="The Minecraft version you want to create a Beet project for.",
 )
 @rich_click.option(
+    "--template",
+    "template_str",
+    help="The template you want to use for your Beet project.",
+)
+@rich_click.option(
     "--config-type",
     "config_type_str",
     help="The file type you want to use for Beet config files.",
@@ -93,6 +109,7 @@ def create_beet_project_cmd(
     author: str,
     description: str,
     mc_version_str: str,
+    template_str: str,
     config_type_str: str,
 ) -> None:
     """Create a new Beet project."""
@@ -104,5 +121,6 @@ def create_beet_project_cmd(
         author=author,
         description=description,
         mc_version_str=mc_version_str,
+        template_str=template_str,
         config_type_str=config_type_str,
     )

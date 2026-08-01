@@ -18,6 +18,7 @@ from bonemeal.core.utils.generators import (
 if TYPE_CHECKING:
     from bonemeal.core.fields.config_type import ConfigType
     from bonemeal.core.fields.mc_version import MCVersion
+    from bonemeal.core.fields.template import Template
 
 
 class UVNotFoundError(BoneMealError):
@@ -38,6 +39,7 @@ def generate_beet_project(
     author: str,
     description: str,
     mc_version: MCVersion,
+    template: Template,
     config_type: ConfigType,
 ) -> None:
     """Generate a new data pack."""
@@ -47,79 +49,68 @@ def generate_beet_project(
     project_id = path.name
     project_name = id_to_name(project_id)
 
-    # Generate Beet config
+    if "beet_config" in template.includes:
+        config = {
+            "id": project_id,
+            "name": project_name,
+            "version": "0.1.0",
+            "author": author,
+            "description": description,
+            "minecraft": mc_version.id,
+            "output": "build",
+            "data_pack": {
+                "load": [
+                    "src",
+                ],
+            },
+            "resource_pack": {
+                "load": [
+                    "src",
+                ],
+            },
+        }
 
-    config = {
-        "id": project_id,
-        "name": project_name,
-        "version": "0.1.0",
-        "author": author,
-        "description": description,
-        "minecraft": mc_version.id,
-        "output": "build",
-        "data_pack": {
-            "load": [
-                "src",
+        with Path.open(path / config_type.file, "x") as f:
+            config_type.write(config, f)
+
+    if "pyproject_toml" in template.includes:
+        pyproject_toml = {
+            "name": project_id,
+            "version": "0.1.0",
+            "dependencies": [
+                "beet>=0.115.0",
+                "bolt>=0.50.1",
+                "bolt-expressions>=0.19.2",
+                "mecha>=0.103.0",
+                "ruff>=0.15.17",
             ],
-        },
-        "resource_pack": {
-            "load": [
-                "src",
-            ],
-        },
-    }
+            "requires-python": ">=3.14",
+            "authors": [{"name": author}],
+            "description": description,
+            "readme": "README.md",
+            "license": "MIT",
+            "license-files": ["LICENSE"],
+        }
 
-    # Write Beet config
+        with Path.open(path / "pyproject.toml", "x") as f:
+            tomlkit.dump(pyproject_toml, f)
 
-    with Path.open(path / config_type.file, "x") as f:
-        config_type.write(config, f)
+    if "readme" in template.includes:
+        with Path.open(path / "README.md", "x") as f:
+            f.write(generate_readme(project_name, description))
 
-    # Generate pyproject.toml
+    if "license" in template.includes:
+        with Path.open(path / "LICENSE", "x") as f:
+            f.write(generate_mit_license(author))
 
-    pyproject_toml = {
-        "name": project_id,
-        "version": "0.1.0",
-        "dependencies": [
-            "beet>=0.115.0",
-            "bolt>=0.50.1",
-            "bolt-expressions>=0.19.2",
-            "mecha>=0.103.0",
-            "ruff>=0.15.17",
-        ],
-        "requires-python": ">=3.14",
-        "authors": [{"name": author}],
-        "description": description,
-        "readme": "README.md",
-        "license": "MIT",
-        "license-files": ["LICENSE"],
-    }
+    if "namespace" in template.includes:
+        Path.mkdir(path / "src" / "data" / path.name, parents=True)
+        Path.mkdir(path / "src" / "assets" / path.name, parents=True)
 
-    # Write pyproject.toml
-
-    with Path.open(path / "pyproject.toml", "x") as f:
-        tomlkit.dump(
-            pyproject_toml,
-            fp=f,
-        )
-
-    # Write README.md
-
-    with Path.open(path / "README.md", "x") as f:
-        f.write(generate_readme(project_name, description))
-
-    with Path.open(path / "LICENSE", "x") as f:
-        f.write(generate_mit_license(author))
-
-    # Make namespaced directories
-
-    Path.mkdir(path / "src" / "data" / path.name, parents=True)
-    Path.mkdir(path / "src" / "assets" / path.name, parents=True)
-
-    # Set up uv
-
-    try:
-        run(["uv", "sync"])
-    except FileNotFoundError as err:
-        raise UVNotFoundError from err
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
-        raise UVExecutionError from err
+    if "uv" in template.includes:
+        try:
+            run(["uv", "sync"])
+        except FileNotFoundError as err:
+            raise UVNotFoundError from err
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
+            raise UVExecutionError from err
