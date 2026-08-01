@@ -5,6 +5,7 @@ import rich_click
 from bonemeal.cli.commons.messages import welcome_message
 from bonemeal.cli.commons.prompts import (
     PromptLevel,
+    author_prompt,
     description_prompt,
     mc_version_prompt,
     path_prompt,
@@ -17,6 +18,7 @@ from bonemeal.core.generators.resource_pack import generate_resource_pack
 def create_resource_pack(
     path_str: str | None = None,
     prompt_level: PromptLevel = PromptLevel.DEFAULT,
+    author: str | None = None,
     description: str | None = None,
     mc_version_str: str | None = None,
 ) -> None:
@@ -24,12 +26,18 @@ def create_resource_pack(
     prompt_level = prompt_level or PromptLevel.DEFAULT
 
     path = path_prompt(path_str, prompt_level)
+    author = author_prompt(author, prompt_level)
     description = description_prompt(description, prompt_level)
     mc_version = mc_version_prompt(mc_version_str, prompt_level)
 
     info_message("Creating resource pack...")
 
-    generate_resource_pack(path=path, description=description, mc_version=mc_version)
+    generate_resource_pack(
+        path=path,
+        author=author,
+        description=description,
+        mc_version=mc_version,
+    )
 
     success_message("Resource project created!")
 
@@ -48,6 +56,10 @@ def create_resource_pack(
     help="Hide all interactive prompts and use default values instead.",
 )
 @rich_click.option(
+    "--author",
+    help="The author of your resource pack.",
+)
+@rich_click.option(
     "--description",
     help="The description of your resource pack.",
 )
@@ -60,6 +72,7 @@ def create_resource_pack(
 def create_resource_pack_cmd(
     path: str,
     prompt_level: PromptLevel,
+    author: str,
     description: str,
     mc_version_str: str,
 ) -> None:
@@ -69,6 +82,7 @@ def create_resource_pack_cmd(
     create_resource_pack(
         path_str=path,
         prompt_level=prompt_level,
+        author=author,
         description=description,
         mc_version_str=mc_version_str,
     )
