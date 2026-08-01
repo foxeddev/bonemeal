@@ -76,7 +76,7 @@ def create_data_pack(
 @rich_click.option(
     "--template",
     "template_str",
-    help="The template you want to use.",
+    help="The template you want to use for your data pack.",
 )
 @handle_errors
 def create_data_pack_cmd(
