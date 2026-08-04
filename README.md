@@ -1,23 +1,11 @@
-# 🦴 Bone Meal
+<div align="center">
 
-The Minecraft pack management CLI.
+# :warning:
 
-## Installation
+### This repository was moved to Codeberg!
 
-1. Download [Python](https://www.python.org/downloads/)
+  <br />
 
-2. Install Bone Meal using `pip install bonemeal`
+**[<kbd> <br> Visit ↗ <br> </kbd>](https://)**
 
-## Commands
-
-Create a new project:
-
-```bash
-bonemeal create
-```
-
-List all available project types:
-
-```bash
-bonemeal list
-```
+</div>

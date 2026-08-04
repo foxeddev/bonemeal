@@ -1,6 +1,0 @@
-"""Entrypoint for Bone Meal."""
-
-from bonemeal.cli.commands.main import main
-
-if __name__ == "__main__":
-    main()
